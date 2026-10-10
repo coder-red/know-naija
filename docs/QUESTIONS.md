@@ -34,6 +34,21 @@ Rule we follow:
 Photos: Wikimedia Commons 800px thumbs only, credit kept in
 `data/credits.json` + shown under each pic in-game.
 
+## Anti-cheat contract
+
+Answers live **only** in `data/questions.json` on the server and are **never**
+sent to clients:
+
+- `GET /api/questions` and `POST /api/room` strip `answer`, `creditUrl`
+  (article slug leaks it) and `commonsHint` before responding
+- The photo credit link never renders during a round — plain
+  "Photo: Wikimedia Commons" text appears only after the answer is revealed
+- Grading happens in `POST /api/answer` (once per round; retries replay state)
+- XP and leaderboard writes happen in `POST /api/finish`, computed from
+  server-graded score, streak, survival, flawless bonus, streak and quest —
+  there is no client-submitted XP endpoint (old `POST /api/score` is gone,
+  returns 410)
+
 ## Validate
 
 ```bash

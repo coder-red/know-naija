@@ -15,7 +15,7 @@ const HOST_LINES = {
   right: ["Na so. Sharp eyes.", "Correct. You be real Omo Naija.", "Too fast. NEPA no fit catch you."],
   wrong: ["One life left. Focus.", "Wrong. That one na setup.", "You fall my hand small."],
   spare: ["HOST SPARES YOU. One Chance used. No more shakara."],
-  elim: ["Eliminated. Predict the winner for +50 XP.", "Out. Call the winner, still chop XP."],
+  elim: ["Eliminated. Call the winner below.", "Out. Predict the winner for fun."],
   win: ["NAIJA LEGEND. Take the crown.", "You sabi Nigeria well well."],
   savage: ["SAVAGE ROUND. Last pic, DOUBLE points. No fear."],
 };
@@ -26,7 +26,6 @@ const ROOM_NAMES = ["lasgidi-1", "yaba-2", "owambe-3", "danfo-4", "surulere-5", 
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const shuffle = (a) => [...a].sort(() => Math.random() - 0.5);
 
-let QUESTIONS = [];
 let state = null;
 let session = 0; // bumped on join/quit — stale timers check this before acting
 
@@ -58,34 +57,8 @@ function dayDiff(a, b) { // days from a -> b (local midnights)
 function streakInfo() {
   return { streak: Number(localStorage.getItem("kn_daystreak") || 0), freeze: Number(localStorage.getItem("kn_freeze") || 0), last: localStorage.getItem("kn_lastday") || "" };
 }
-// Called at end of every room. Returns {streak, froze, bonus}.
-function extendStreak() {
-  const today = localDay();
-  let { streak, freeze, last } = streakInfo();
-  let froze = false;
-  if (last === today) return { streak, froze, bonus: 0 };
-  const gap = last ? dayDiff(last, today) : 99;
-  if (gap === 1) streak += 1;
-  else if (gap === 2 && freeze > 0) { freeze -= 1; streak += 1; froze = true; } // freeze burns instead of the streak
-  else streak = 1;
-  if (streak % 7 === 0) freeze = Math.min(2, freeze + 1); // earn a freeze weekly
-  localStorage.setItem("kn_daystreak", streak);
-  localStorage.setItem("kn_freeze", freeze);
-  localStorage.setItem("kn_lastday", today);
-  return { streak, froze, bonus: Math.min(50, streak * 5) };
-}
-// ---- daily quest: survive 3 rounds ----
+// ---- daily quest progress (display only — the server owns the bonus) ----
 function questProg() { return JSON.parse(localStorage.getItem("kn_quest") || '{"date":"","best":0,"done":false}'); }
-function questBump(survived) {
-  const today = localDay();
-  const q = questProg();
-  if (q.date !== today) { q.date = today; q.best = 0; q.done = false; }
-  q.best = Math.max(q.best, survived);
-  let bonus = 0;
-  if (!q.done && q.best >= 3) { q.done = true; bonus = 30; }
-  localStorage.setItem("kn_quest", JSON.stringify(q));
-  return { bonus, done: q.done, best: q.best };
-}
 function refreshMeta() {
   const { streak, freeze } = streakInfo();
   $("me-streak").textContent = streak > 0 ? `${streak}-day streak` : "No streak yet — play a room to start one";
@@ -95,25 +68,8 @@ function refreshMeta() {
   $("me-quest").textContent = fresh && q.done ? `done today (best ${q.best}/7)` : `survive 3 rounds (+30 XP)${fresh ? ` — best today ${q.best}/7` : ""}`;
 }
 
-async function loadQuestions() {
-  try {
-    const r = await fetch("/api/questions");
-    if (r.ok) { QUESTIONS = await r.json(); return; }
-  } catch { /* offline */ }
-  QUESTIONS = [];
-}
-// HQ lesson: ramp easy -> hard so round 1 hooks and the finale is savage.
-function roomPool() {
-  const v = QUESTIONS.filter((q) => q.verified !== false);
-  const pool = v.length >= 7 ? v : QUESTIONS;
-  const by = { easy: [], medium: [], hard: [] };
-  shuffle(pool).forEach((q) => (by[q.difficulty] || by.medium).push(q));
-  const plan = ["easy", "easy", "medium", "medium", "medium", "hard", "hard"];
-  const out = [];
-  for (const d of plan) out.push(by[d].pop() || by.easy.pop() || by.medium.pop() || by.hard.pop());
-  return out.filter(Boolean).slice(0, 7);
-}
-
+// Question bank + difficulty ramp live on the server now (/api/room deals
+// stripped rounds). The client never sees answers until grade time.
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 // Monogram tile for missing/failed photos — no emoji, no leaks.
 function stateCode(s) { return String(s || "?").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase(); }
@@ -164,12 +120,13 @@ async function loadBoards() {
   }
 }
 
-function newRoom(player) {
+function newRoom(player, token, rounds) {
   const bots = shuffle(BOT_NAMES).slice(0, 19).map((n) => ({ name: n, skill: 0.45 + Math.random() * 0.45, alive: true, score: 0 }));
   return {
+    token,
     player: { ...player, lives: 2, spare: true, streak: 0, maxStreak: 0, score: 0, alive: true, correct: 0, answered: 0, predict: null },
     bots,
-    rounds: roomPool(),
+    rounds,
     idx: 0,
     lock: false,
   };
@@ -242,7 +199,7 @@ function offerPredict() {
   const box = $("g-predict");
   const cands = [...state.bots].filter((b) => b.alive).sort((a, b) => b.score - a.score).slice(0, 3);
   if (!cands.length) return;
-  box.innerHTML = `<span>Eliminated? Call the winner (+50 XP if you are right)</span>` +
+  box.innerHTML = `<span>Eliminated? Call the winner (for pride)</span>` +
     cands.map((b) => `<button data-n="${escapeHtml(b.name)}">${escapeHtml(b.name)}</button>`).join("");
   box.classList.remove("hidden");
   box.querySelectorAll("button").forEach((btn) => {
@@ -254,49 +211,60 @@ function offerPredict() {
   });
 }
 
-function answer(op, btn) {
+async function answer(op, btn) {
   if (state.lock) return;
   state.lock = true;
   clearInterval(timerInt);
   const q = state.rounds[state.idx];
-  const correct = op === q.answer;
-  const secsLeft = Math.max(0, 10 - (performance.now() - state.t0) / 1000);
-  const savageMult = state.idx === state.rounds.length - 1 ? 2 : 1;
+  const msLeft = Math.max(0, 10 - (performance.now() - state.t0) / 1000);
+  const wasAlive = state.player.alive;
   const btns = [...$("g-opts").children];
+  btns.forEach((b) => { b.disabled = true; });
+
+  // Grade on the server — the client never knew the answer until now.
+  let res = null;
+  try {
+    const r = await fetch("/api/answer", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: state.token, choice: op, msLeft: Math.round(msLeft * 10) / 10 }),
+    });
+    if (!r.ok) throw new Error("grade failed");
+    res = await r.json();
+  } catch {
+    $("g-feed").textContent = "Connection lost — ending the room with what you have.";
+    $("g-host").textContent = "Network wahala. We go again.";
+    const mySession = session;
+    setTimeout(() => { if (mySession === session) endGame(true); }, 1200);
+    return;
+  }
+  if (res.graded === false) { advance(); return; } // laggy double-submit — replay, count nothing twice
+
   btns.forEach((b) => {
-    b.disabled = true;
-    if (b.dataset.opt === q.answer) b.classList.add("right");
-    else if (b === btn && !correct) { b.classList.add("wrong", "shake"); }
+    if (b.dataset.opt === res.answer) b.classList.add("right");
+    else if (b === btn && !res.correct) { b.classList.add("wrong", "shake"); }
   });
   // Answer is out — safe to show the plain-text photo credit (never a link).
   $("g-credit").textContent = q.imageUrl ? "Photo: Wikimedia Commons" : "";
 
-  if (correct && state.player.alive) {
-    const gained = Math.round((100 + secsLeft * 10 + state.player.streak * 25) * savageMult);
-    state.player.score += gained;
-    state.player.streak += 1;
-    state.player.maxStreak = Math.max(state.player.maxStreak, state.player.streak);
-    state.player.correct += 1;
-    state.player.answered += 1;
-    $("g-feed").textContent = `+${gained} — ${pick(HOST_LINES.right)}`;
+  const p = state.player;
+  p.score = res.score; p.streak = res.streak; p.maxStreak = res.maxStreak;
+  p.lives = res.lives; p.spare = res.spare; p.alive = res.alive;
+  p.answered = res.answered; p.correct = res.correctCount;
+
+  if (res.correct && wasAlive) {
+    $("g-feed").textContent = `+${res.gained} — ${pick(HOST_LINES.right)}`;
     $("g-host").textContent = pick(HOST_LINES.right);
-  } else if (state.player.alive) {
-    state.player.answered += 1;
-    state.player.lives -= 1;
-    state.player.streak = 0;
-    if (state.player.lives <= 0 && state.player.spare) {
+  } else if (wasAlive) {
+    if (res.spared) {
       // One Chance: HQ's extra-life mechanic — spares you once per room.
-      state.player.spare = false;
-      state.player.lives = 1;
-      $("g-feed").textContent = `Correct: ${q.answer}. ${pick(HOST_LINES.spare)}`;
+      $("g-feed").textContent = `Correct: ${res.answer}. ${pick(HOST_LINES.spare)}`;
       $("g-host").textContent = pick(HOST_LINES.spare);
-    } else if (state.player.lives <= 0) {
-      state.player.alive = false;
-      $("g-feed").textContent = `Eliminated! Correct: ${q.answer}. ${pick(HOST_LINES.elim)}`;
+    } else if (!res.alive) {
+      $("g-feed").textContent = `Eliminated. Correct: ${res.answer}. ${pick(HOST_LINES.elim)}`;
       $("g-host").textContent = $("g-feed").textContent;
       offerPredict();
     } else {
-      $("g-feed").textContent = `Wrong! Correct: ${q.answer}. ${pick(HOST_LINES.wrong)}`;
+      $("g-feed").textContent = `Wrong. Correct: ${res.answer}. ${pick(HOST_LINES.wrong)}`;
       $("g-host").textContent = $("g-feed").textContent;
     }
   }
@@ -313,11 +281,14 @@ function answer(op, btn) {
     while (alive.length < 3 && guard++ < 20) { const d = state.bots.find((b) => !b.alive); if (!d) break; d.alive = true; alive.push(d); }
   }
 
-  $("g-lives").textContent = Math.max(0, state.player.lives);
-  $("g-streak").textContent = state.player.streak;
-  $("g-score").textContent = state.player.score;
+  $("g-lives").textContent = Math.max(0, p.lives);
+  $("g-streak").textContent = p.streak;
+  $("g-score").textContent = p.score;
   renderRoomBoard();
+  advance();
+}
 
+function advance() {
   const mySession = session;
   setTimeout(() => {
     if (mySession !== session) return; // user quit — stay home
@@ -345,35 +316,61 @@ function confetti(n = 30) {
   }
 }
 
-async function endGame() {
+async function endGame(offline = false) {
   show("screen-over");
-  const rank = [{ n: state.player.name + " (you)", s: state.player.score }, ...state.bots.map((b) => ({ n: b.name, s: b.score }))].sort((a, b) => b.s - a.s);
+  const p = state.player;
+  const rank = [{ n: p.name + " (you)", s: p.score }, ...state.bots.map((b) => ({ n: b.name, s: b.score }))].sort((a, b) => b.s - a.s);
   const pos = rank.findIndex((r) => r.n.endsWith("(you)")) + 1;
   const won = pos === 1;
   $("o-rank").textContent = "#" + pos;
   $("o-rank").dataset.tier = won ? "gold" : pos <= 3 ? "top3" : "rest";
-  const survived = state.player.alive ? state.rounds.length : Math.max(0, state.idx);
-  // HQ lesson: losers must progress too — survival XP + accuracy + bonuses.
-  const oracle = state.player.predict && rank[0].n === state.player.predict ? 50 : 0;
-  const { streak, froze, bonus: streakBonus } = extendStreak();
-  const { bonus: questBonus } = questBump(survived);
-  const xp = Math.round(state.player.score / 10 + (won ? 150 : 0) + state.player.maxStreak * 5 + survived * 10 + oracle + streakBonus + questBonus);
-  const acc = state.player.answered ? Math.round((state.player.correct / state.player.answered) * 100) : 0;
 
-  $("o-title").textContent = won ? "You win the room!" : state.player.alive ? `Survived! #${pos} of 20` : `Eliminated — #${pos} of 20`;
-  let sub = won ? pick(HOST_LINES.win) + ` +${xp} XP for Team ${state.player.team}.` : `+${xp} XP for Team ${state.player.team}. Hit rematch — one more run.`;
-  if (oracle) sub += " Called the winner. Oracle +50 XP.";
+  // XP comes from the server receipt (server-graded score + streak + quest).
+  // Offline fallback estimates from the last mirrored score so the screen never lies empty.
+  let receipt = null;
+  if (!offline) {
+    try {
+      const r = await fetch("/api/finish", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: state.token, day: localDay() }),
+      });
+      if (r.ok) receipt = await r.json();
+    } catch { /* estimate below */ }
+  }
+  let xp, survived, accuracy, daystreak, flawless = false;
+  let froze = false, questBonus = 0, qdone = false, qbest = 0, calledIt = false;
+  if (receipt) {
+    xp = receipt.xp; survived = receipt.survived; accuracy = receipt.accuracy;
+    daystreak = receipt.streak; flawless = receipt.flawless;
+    froze = receipt.froze; questBonus = receipt.questBonus;
+    qdone = receipt.qdone; qbest = receipt.qbest;
+    localStorage.setItem("kn_daystreak", receipt.streak);
+    localStorage.setItem("kn_freeze", receipt.freeze);
+    localStorage.setItem("kn_lastday", localDay());
+    localStorage.setItem("kn_quest", JSON.stringify({ date: localDay(), best: receipt.qbest, done: receipt.qdone }));
+  } else {
+    survived = p.alive ? state.rounds.length : Math.max(0, state.idx);
+    accuracy = p.answered ? Math.round((p.correct / p.answered) * 100) : 0;
+    xp = Math.round(p.score / 10 + p.maxStreak * 5 + survived * 10);
+    daystreak = streakInfo().streak;
+  }
+  if (p.predict && rank[0].n === p.predict) calledIt = true; // pride only — no XP, can't be verified
+
+  $("o-title").textContent = won ? "You win the room!" : p.alive ? `Survived! #${pos} of 20` : `Eliminated — #${pos} of 20`;
+  let sub = won ? pick(HOST_LINES.win) + ` +${xp} XP for Team ${p.team}.` : `+${xp} XP for Team ${p.team}. Hit rematch — one more run.`;
+  if (flawless) sub += " Flawless room +150.";
+  if (calledIt) sub += " You called the winner.";
   if (froze) sub += " Freeze saved your streak.";
   if (questBonus) sub += " Daily quest done. +30 XP.";
   $("o-sub").textContent = sub;
-  $("o-stats").textContent = `Accuracy ${acc}% · Best combo x${state.player.maxStreak} · Survived ${survived}/${state.rounds.length} · ${streak}-day streak`;
-  $("o-score").textContent = state.player.score;
+  $("o-stats").textContent = `Accuracy ${accuracy}% · Best combo x${p.maxStreak} · Survived ${survived}/${state.rounds.length} · ${daystreak}-day streak`;
+  $("o-score").textContent = p.score;
   $("o-xp").textContent = xp;
 
   const prevBest = Number(localStorage.getItem("kn_best") || 0);
-  const isPB = state.player.score > prevBest && state.player.score > 0;
+  const isPB = p.score > prevBest && p.score > 0;
   if (isPB) {
-    localStorage.setItem("kn_best", state.player.score);
+    localStorage.setItem("kn_best", p.score);
     $("o-stats").textContent += " · NEW PERSONAL BEST";
   }
   if (won || isPB) confetti();
@@ -383,38 +380,45 @@ async function endGame() {
   $("o-league").textContent = leagueFor(totalXp);
   $("o-board").innerHTML = rank.slice(0, 8).map((r, i) => `<li>${i + 1}. <b>${escapeHtml(r.n)}</b> — ${r.s}</li>`).join("");
 
-  const entry = { name: state.player.name, team: state.player.team, xp, wins: won };
-  // BUG FIX: local board stored lifetime totals next to server per-game scores — now per-game both sides.
   const local = JSON.parse(localStorage.getItem("kn_local_board") || "[]");
-  local.push(entry);
+  local.push({ name: p.name, team: p.team, xp });
   localStorage.setItem("kn_local_board", JSON.stringify(local.slice(-50)));
-  let boards = null;
   try {
-    await fetch("/api/score", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(entry) });
     const r = await fetch("/api/leaderboard");
-    boards = await r.json();
-  } catch { /* offline */ }
-  if (boards) {
-    renderCities($("o-cities"), boards.cities);
+    renderCities($("o-cities"), (await r.json()).cities);
     loadBoards();
-  } else {
+  } catch {
     $("o-cities").innerHTML = "<p class='tiny'>City battle needs connection.</p>";
   }
   refreshMeta();
 }
 
-$("btn-join").onclick = async () => {
-  const team = $("in-team").value;
-  localStorage.setItem("kn_team", team);
-  if (!QUESTIONS.length) await loadQuestions();
-  if (!QUESTIONS.length) { alert("Questions failed to load. Is the server running?"); return; }
+async function startRoom() {
+  const team = localStorage.getItem("kn_team") || "Lagos";
+  let room = null;
+  try {
+    const r = await fetch("/api/room", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: myHandle(), team }),
+    });
+    if (!r.ok) throw new Error("room failed");
+    room = await r.json();
+  } catch {
+    alert("Could not start a room. Check your connection and try again.");
+    return;
+  }
+  if (!room.rounds || !room.rounds.length) { alert("No questions right now. Try again."); return; }
   session += 1;
-  state = newRoom({ name: myHandle(), team });
+  state = newRoom({ name: myHandle(), team }, room.token, room.rounds);
   $("pill-room").textContent = "room: " + pick(ROOM_NAMES);
   show("screen-game");
   playRound();
+}
+$("btn-join").onclick = async () => {
+  localStorage.setItem("kn_team", $("in-team").value);
+  await startRoom();
 };
-$("btn-again").onclick = () => { session += 1; state = newRoom({ name: myHandle(), team: localStorage.getItem("kn_team") || "Lagos" }); $("pill-room").textContent = "room: " + pick(ROOM_NAMES); show("screen-game"); playRound(); };
+$("btn-again").onclick = () => startRoom();
 $("btn-home").onclick = goHome;
 $("btn-quit").onclick = goHome;
 $("nav-home").onclick = goHome;
@@ -424,7 +428,6 @@ $("btn-board").onclick = () => loadBoards();
 (async () => {
   $("me-handle").textContent = myHandle();
   $("in-team").value = localStorage.getItem("kn_team") || "Lagos";
-  await loadQuestions();
   refreshMeta();
   loadBoards();
 })();

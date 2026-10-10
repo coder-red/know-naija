@@ -13,11 +13,13 @@ node server.js
 # -> http://localhost:3000
 ```
 
-API:
+API (anti-cheat: answers never leave the server):
 
-- `GET /api/questions` — question bank
-- `GET /api/leaderboard` — top scores
-- `POST /api/score` `{name, team, xp, wins}` — submit score
+- `POST /api/room` `{name, team}` → `{token, rounds}` — deals 7 ramped rounds, answers stripped
+- `POST /api/answer` `{token, choice, msLeft}` → `{correct, answer, gained, score, streak, lives, spare, alive}` — graded once per round
+- `POST /api/finish` `{token, day}` → `{xp, survived, accuracy, streak, ...}` — writes the leaderboard itself
+- `GET /api/questions` — stripped bank (no answers, no credit URLs)
+- `GET /api/leaderboard` — top players + weekly/all-time city battle
 
 ## Lagos Life plug-in (when API drops)
 
