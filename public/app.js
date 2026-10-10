@@ -195,12 +195,16 @@ function playRound() {
   $("g-predict").innerHTML = "";
   const opts = $("g-opts");
   opts.innerHTML = "";
-  shuffle(q.options).forEach((op) => {
+  const letters = ["A", "B", "C", "D"];
+  shuffle(q.options).forEach((op, i) => {
     const b = document.createElement("button");
-    b.textContent = op;
+    b.dataset.opt = op;
+    b.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${escapeHtml(op)}</span>`;
     b.onclick = () => answer(op, b);
     opts.appendChild(b);
   });
+  $("g-dots").innerHTML = state.rounds.map((_, i) =>
+    `<span class="${i < state.idx ? "done" : i === state.idx ? "now" : ""}"></span>`).join("");
   renderRoomBoard();
   if (roundNo === 1) $("g-host").textContent = pick(HOST_LINES.start);
 
@@ -212,6 +216,7 @@ function playRound() {
     if (mySession !== session) { clearInterval(timerInt); return; }
     const left = 10 - (performance.now() - t0) / 1000;
     bar.style.width = Math.max(0, (left / 10) * 100) + "%";
+    bar.classList.toggle("danger", left < 3);
     if (left <= 0) { clearInterval(timerInt); answer(null, null); }
   }, 100);
   state.t0 = t0;
@@ -245,8 +250,8 @@ function answer(op, btn) {
   const btns = [...$("g-opts").children];
   btns.forEach((b) => {
     b.disabled = true;
-    if (b.textContent === q.answer) b.classList.add("right");
-    else if (b === btn && !correct) b.classList.add("wrong");
+    if (b.dataset.opt === q.answer) b.classList.add("right");
+    else if (b === btn && !correct) { b.classList.add("wrong", "shake"); }
   });
 
   if (correct && state.player.alive) {
