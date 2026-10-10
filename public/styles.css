@@ -24,4 +24,11 @@ h1 { margin:.2em 0; } .sub { color:var(--mut); }
 .host { background:#0d1430; border:1px dashed var(--line); padding:10px; border-radius:10px; }
 .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center; margin:12px 0; } .stats span { font-size:28px; font-weight:800; display:block; } .stats small { color:var(--mut); }
 .btnrow { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.btnrow1 { margin-top:12px; }
+.me { background:#0d1430; border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+.credit { font-size:12px; color:var(--mut); margin:6px 2px 0; } .credit a { color:var(--mut); }
+.pic img { max-width:100%; max-height:300px; border-radius:10px; display:block; }
+.cities { display:grid; gap:8px; } .cityrow { display:grid; grid-template-columns:110px 1fr auto; gap:8px; align-items:center; font-size:13px; }
+.cityname { font-weight:700; white-space:nowrap; } .cityxp { color:var(--mut); white-space:nowrap; }
+.citybar { height:10px; background:#0007; border-radius:99px; overflow:hidden; } .citybar div { height:100%; background:linear-gradient(90deg,var(--acc),var(--acc2)); }
 .foot { text-align:center; color:var(--mut); font-size:12px; padding:20px; }

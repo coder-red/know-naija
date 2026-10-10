@@ -104,8 +104,19 @@ const server = http.createServer(async (req, res) => {
 
     if (p === "/api/leaderboard" && req.method === "GET") {
       const db = readDb();
-      const top = [...(db.scores || [])].sort((a, b) => b.xp - a.xp).slice(0, 20);
-      return send(res, 200, JSON.stringify({ top, count: (db.scores || []).length }), MIME[".json"]);
+      const scores = db.scores || [];
+      const top = [...scores].sort((a, b) => b.xp - a.xp).slice(0, 20);
+      const TEAMS = ["Lagos", "Abuja", "PH", "Diaspora"];
+      const cities = TEAMS.map((team) => {
+        const mine = scores.filter((s) => s.team === team);
+        return {
+          team,
+          xp: mine.reduce((n, s) => n + (s.xp || 0), 0),
+          players: mine.length,
+          wins: mine.reduce((n, s) => n + (s.wins ? 1 : 0), 0),
+        };
+      }).sort((a, b) => b.xp - a.xp);
+      return send(res, 200, JSON.stringify({ top, cities, count: scores.length }), MIME[".json"]);
     }
 
     if (p === "/api/score" && req.method === "POST") {
