@@ -48,22 +48,26 @@
     </section>
 
     <!-- GAME -->
-    <section id="screen-game" class="card hidden">
+    <section id="screen-game" class="card game-card hidden">
       <div class="game-top">
-        <div>Round <b id="g-round">1</b>/7 • ❤️ <b id="g-lives">2</b> • 🔥 <b id="g-streak">0</b></div>
-        <div class="g-right">Score <b id="g-score">0</b> <button id="btn-quit" class="quit" title="Leave room">✕ Quit</button></div>
+        <div class="hud-left">ROUND <b id="g-round">1</b>/7 <span class="hud-sep">•</span> ❤️ <b id="g-lives">2</b> <span class="hud-sep">•</span> 🔥 <b id="g-streak">0</b></div>
+        <div class="g-right">SCORE <b id="g-score">0</b> <button id="btn-quit" class="quit" title="Leave room">✕ Quit</button></div>
       </div>
       <div class="timer"><div id="g-timerbar"></div></div>
       <div id="g-dots" class="dots" aria-hidden="true"></div>
-      <div class="picwrap"><div id="g-pic" class="pic" aria-live="polite"></div><div id="g-picnum" class="picnum">1 / 7</div></div>
-      <div id="g-credit" class="credit"></div>
-      <div id="g-clue" class="clue"></div>
-      <div id="g-opts" class="opts"></div>
-      <div id="g-feed" class="feed"></div>
-      <div id="g-predict" class="predict hidden"></div>
-      <div class="roomrow">
-        <div class="roommain"><h3>Room leaderboard (live)</h3><ol id="g-roomboard" class="board"></ol></div>
-        <div class="roomside"><h3>Host 🤖</h3><p id="g-host" class="host">No dulling! First pic don land.</p></div>
+      <div class="game-grid">
+        <div class="game-main">
+          <div class="picwrap"><div id="g-pic" class="pic" aria-live="polite"></div><div id="g-picnum" class="picnum">1 / 7</div></div>
+          <div id="g-credit" class="credit"></div>
+          <div id="g-clue" class="clue"></div>
+          <div id="g-opts" class="opts"></div>
+          <div id="g-feed" class="feed"></div>
+          <div id="g-predict" class="predict hidden"></div>
+        </div>
+        <aside class="game-side">
+          <div class="roommain"><h3>Room leaderboard (live)</h3><ol id="g-roomboard" class="board"></ol></div>
+          <div class="roomside"><h3>Host 🤖</h3><p id="g-host" class="host">No dulling! First pic don land.</p></div>
+        </aside>
       </div>
     </section>
 

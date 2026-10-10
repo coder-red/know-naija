@@ -4,7 +4,11 @@
 // daily streak + freeze, daily quest, PB + confetti.
 const $ = (id) => document.getElementById(id);
 const SCREENS = ["screen-home", "screen-game", "screen-over"];
-function show(id) { SCREENS.forEach((s) => $(s).classList.add("hidden")); $(id).classList.remove("hidden"); }
+function show(id) {
+  SCREENS.forEach((s) => $(s).classList.add("hidden"));
+  $(id).classList.remove("hidden");
+  document.body.dataset.screen = id.replace("screen-", ""); // home | game | over — drives shell layout
+}
 
 const HOST_LINES = {
   start: ["No dulling! First pic don land.", "20 enter, few go survive. Na you?", "Diaspora vs home-based — make una show sef."],
@@ -197,11 +201,13 @@ function playRound() {
   $("g-predict").innerHTML = "";
   const opts = $("g-opts");
   opts.innerHTML = "";
-  const letters = ["A", "B", "C", "D"];
+  // Kahoot lesson: shape + color coding (▲ red ◆ blue ● gold ■ green) — iconic, colorblind-safe.
+  const shapes = [["s0", "▲"], ["s1", "◆"], ["s2", "●"], ["s3", "■"]];
   shuffle(q.options).forEach((op, i) => {
     const b = document.createElement("button");
     b.dataset.opt = op;
-    b.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${escapeHtml(op)}</span>`;
+    b.className = shapes[i][0];
+    b.innerHTML = `<span class="opt-shape">${shapes[i][1]}</span><span>${escapeHtml(op)}</span>`;
     b.onclick = () => answer(op, b);
     opts.appendChild(b);
   });
