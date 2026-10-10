@@ -176,7 +176,9 @@ function playRound() {
   const q = state.rounds[state.idx];
   const roundNo = state.idx + 1;
   const isSavage = state.idx === state.rounds.length - 1;
+  document.querySelector(".picwrap").classList.toggle("savage", isSavage);
   $("g-round").textContent = roundNo;
+  $("g-picnum").textContent = roundNo + " / " + state.rounds.length;
   $("g-lives").textContent = state.player.lives;
   $("g-streak").textContent = state.player.streak;
   $("g-score").textContent = state.player.score;
@@ -329,6 +331,8 @@ async function endGame() {
   const rank = [{ n: state.player.name + " (you)", s: state.player.score }, ...state.bots.map((b) => ({ n: b.name, s: b.score }))].sort((a, b) => b.s - a.s);
   const pos = rank.findIndex((r) => r.n.endsWith("(you)")) + 1;
   const won = pos === 1;
+  $("o-rank").textContent = "#" + pos;
+  $("o-rank").dataset.tier = won ? "gold" : pos <= 3 ? "top3" : "rest";
   const survived = state.player.alive ? state.rounds.length : Math.max(0, state.idx);
   // HQ lesson: losers must progress too — survival XP + accuracy + bonuses.
   const oracle = state.player.predict && rank[0].n === state.player.predict ? 50 : 0;

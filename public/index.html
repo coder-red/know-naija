@@ -7,6 +7,9 @@
   <title>Know Naija — Where is this?</title>
   <meta name="description" content="Live elimination quiz: how well do you know Nigeria? Guess locations, survive the room, rep your city." />
   <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -18,8 +21,10 @@
   <main class="wrap">
     <!-- HOME -->
     <section id="screen-home" class="card">
-      <h1>Where is this? 👀</h1>
+      <div class="hero-eyebrow"><span class="livedot"></span> LIVE &bull; NAIJA TRIVIA ROOMS</div>
+      <h1 class="hero-title">Where is <em>this?</em> &#127758;</h1>
       <p class="sub">Live elimination quiz. 20 enter. 7 pics. Last ones standing chop the points. <b>No dulling.</b></p>
+      <div class="hero-chips"><span>&#9889; 3-min rooms</span><span>&#128293; streaks</span><span>&#127758; city war</span></div>
       <p class="me">Playing as <b id="me-handle">…</b> <span class="tiny">(username will come from Lagos Life when the API lands)</span></p>
       <p class="me streakline">🔥 <b id="me-streak">0-day streak</b> <span id="me-freeze" class="tiny"></span></p>
       <p class="me questline">🎯 Daily quest: <b id="me-quest">survive 3 rounds (+30xp)</b></p>
@@ -50,7 +55,7 @@
       </div>
       <div class="timer"><div id="g-timerbar"></div></div>
       <div id="g-dots" class="dots" aria-hidden="true"></div>
-      <div id="g-pic" class="pic" aria-live="polite"></div>
+      <div class="picwrap"><div id="g-pic" class="pic" aria-live="polite"></div><div id="g-picnum" class="picnum">1 / 7</div></div>
       <div id="g-credit" class="credit"></div>
       <div id="g-clue" class="clue"></div>
       <div id="g-opts" class="opts"></div>
@@ -64,7 +69,8 @@
 
     <!-- OVER -->
     <section id="screen-over" class="card hidden">
-      <h1 id="o-title">You survive? 🎉</h1>
+      <div id="o-rank" class="rankring">#&ndash;</div>
+      <h1 id="o-title" class="o-title">You survive? 🎉</h1>
       <p id="o-sub" class="sub"></p>
       <p id="o-stats" class="statsline"></p>
       <div class="stats"><div><span id="o-score">0</span><small>score</small></div><div><span id="o-xp">0</span><small>xp earned</small></div><div><span id="o-league">Street</span><small>league</small></div></div>
