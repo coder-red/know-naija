@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Know Naija — Where is this?</title>
+  <meta name="description" content="Live elimination quiz: how well do you know Nigeria? Guess locations, survive the room, top the leaderboard." />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🇳🇬 Know <span>Naija</span></div>
+    <div class="top-right"><span id="pill-room" class="pill">room: lasgidi-1</span><span id="pill-players" class="pill">20 in room</span></div>
+  </header>
+
+  <main class="wrap">
+    <!-- HOME -->
+    <section id="screen-home" class="card">
+      <h1>Where is this? 👀</h1>
+      <p class="sub">Live elimination quiz. 20 enter. 7 pics. Last ones standing chop the points. <b>No dulling.</b></p>
+      <label class="lbl">Nickname
+        <input id="in-name" maxlength="24" placeholder="e.g. AmakaFrom Peckham" autocomplete="off" />
+      </label>
+      <label class="lbl">City team
+        <select id="in-team">
+          <option>Lagos</option>
+          <option>Abuja</option>
+          <option>PH</option>
+          <option>Diaspora</option>
+        </select>
+      </label>
+      <button id="btn-join" class="btn big">Join room ⚡</button>
+      <p class="tiny">Solo MVP: bots fill the room so it feels live. Real multiplayer + Lagos Life plug-in come next. Pics are stylised placeholders until licensed photos land — see <code>docs/IMAGES.md</code>.</p>
+      <div class="row"><div><h3>How it works</h3><ol class="how"><li>7 rounds, 10s per pic</li><li>Wrong answer = lose 1 life (you get 2)</li><li>Fast + streak = more points</li></ol></div>
+      <div><h3>Top legends <button id="btn-board" class="link">refresh</button></h3><ol id="home-board" class="board"><li>…loading</li></ol></div></div>
+    </section>
+
+    <!-- GAME -->
+    <section id="screen-game" class="card hidden">
+      <div class="game-top">
+        <div>Round <b id="g-round">1</b>/7 • ❤️ <b id="g-lives">2</b> • 🔥 <b id="g-streak">0</b></div>
+        <div>Score <b id="g-score">0</b></div>
+      </div>
+      <div class="timer"><div id="g-timerbar"></div></div>
+      <div id="g-pic" class="pic" aria-live="polite"></div>
+      <div id="g-clue" class="clue"></div>
+      <div id="g-opts" class="opts"></div>
+      <div id="g-feed" class="feed"></div>
+      <div class="roomrow">
+        <div class="roommain"><h3>Room leaderboard (live)</h3><ol id="g-roomboard" class="board"></ol></div>
+        <div class="roomside"><h3>Host 🤖</h3><p id="g-host" class="host">No dulling! First pic don land.</p></div>
+      </div>
+    </section>
+
+    <!-- OVER -->
+    <section id="screen-over" class="card hidden">
+      <h1 id="o-title">You survive? 🎉</h1>
+      <p id="o-sub" class="sub"></p>
+      <div class="stats"><div><span id="o-score">0</span><small>score</small></div><div><span id="o-xp">0</span><small>xp earned</small></div><div><span id="o-league">Street</span><small>league</small></div></div>
+      <h3>Room result</h3><ol id="o-board" class="board"></ol>
+      <div class="btnrow"><button id="btn-again" class="btn big">Rematch ⚡</button><button id="btn-home" class="btn ghost">Change name</button></div>
+    </section>
+  </main>
+
+  <footer class="foot">Know Naija v0.1 • standalone MVP • Lagos Life API adapter in <code>lib/lagoslife.js</code> (stub)</footer>
+  <script src="/app.js"></script>
+</body>
+</html>
