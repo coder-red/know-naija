@@ -1,26 +1,446 @@
 [
-  { "id": "lekki-ikoyi-bridge", "prompt": "Where is this?", "answer": "Lekki-Ikoyi Link Bridge, Lagos", "options": ["Lekki-Ikoyi Link Bridge, Lagos", "Third Mainland Bridge, Lagos", "Carter Bridge, Lagos", "Eko Bridge, Lagos"], "state": "Lagos", "difficulty": "easy", "emoji": "🌉", "clue": "Cable-stayed bridge, toll gate, runs to Ikoyi.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Lekki-link-bridge--full-view2.jpg/800px-Lekki-link-bridge--full-view2.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Lekki-Ikoyi_Link_Bridge" },
-  { "id": "zuma-rock", "prompt": "Where is this?", "answer": "Zuma Rock, Niger State", "options": ["Zuma Rock, Niger State", "Olumo Rock, Ogun State", "Aso Rock, Abuja", "Shere Hills, Plateau"], "state": "Niger", "difficulty": "easy", "emoji": "⛰️", "clue": "Giant monolith on the Abuja-Kaduna express.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Zuma_Rock.jpg/800px-Zuma_Rock.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Zuma_Rock" },
-  { "id": "olumo-rock", "prompt": "Where is this?", "answer": "Olumo Rock, Abeokuta", "options": ["Olumo Rock, Abeokuta", "Zuma Rock, Niger", "Riyom Rock, Plateau", "Wase Rock, Plateau"], "state": "Ogun", "difficulty": "medium", "emoji": "🪨", "clue": "Historic refuge rock in Egba land.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/New_Olumo_Rock%2C_Abeokuta.jpg/800px-New_Olumo_Rock%2C_Abeokuta.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Olumo_Rock" },
-  { "id": "national-mosque", "prompt": "Where is this?", "answer": "National Mosque, Abuja", "options": ["National Mosque, Abuja", "Sultan Bello Mosque, Kaduna", "Lagos Central Mosque", "Kano Grand Mosque"], "state": "FCT", "difficulty": "medium", "emoji": "🕌", "clue": "Golden dome, Independence Ave, faces National Church.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Abuja_National_Mosque.jpg/800px-Abuja_National_Mosque.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Abuja_National_Mosque" },
-  { "id": "cocoa-house", "prompt": "Where is this?", "answer": "Cocoa House, Ibadan", "options": ["Cocoa House, Ibadan", "NECOM House, Lagos", "Eagle House, Kano", "Bank of Industry, Abuja"], "state": "Oyo", "difficulty": "medium", "emoji": "🏢", "clue": "First skyscraper in West Africa, built from cocoa money.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cocoa_House%2C_Ibadan.JPG/800px-Cocoa_House%2C_Ibadan.JPG", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Cocoa_House" },
-  { "id": "aso-villa", "prompt": "Where is this?", "answer": "Aso Rock Villa, Abuja", "options": ["Aso Rock Villa, Abuja", "Government House, Enugu", "State House, Lagos", "National Assembly, Abuja"], "state": "FCT", "difficulty": "hard", "emoji": "🏛️", "clue": "Presidential residence under the big rock.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Aso_Rock_as_seen_from_the_IBB_golf_course_in_Abuja%2C_Nigeria.jpg/800px-Aso_Rock_as_seen_from_the_IBB_golf_course_in_Abuja%2C_Nigeria.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Aso_Rock" },
-  { "id": "nike-gallery", "prompt": "Where is this?", "answer": "Nike Art Gallery, Lekki", "options": ["Nike Art Gallery, Lekki", "National Museum, Lagos", "Terra Kulture, VI", "Mbari House, Owerri"], "state": "Lagos", "difficulty": "hard", "emoji": "🎨", "clue": "West Africa's biggest art collection, Lekki.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Lagos_Lekki_Nike_Art_Gallery_Aug_2026_IMG_6951b.jpg/800px-Lagos_Lekki_Nike_Art_Gallery_Aug_2026_IMG_6951b.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Nike_Art_Gallery" },
-  { "id": "erin-ijesha", "prompt": "Where is this?", "answer": "Erin Ijesha Waterfall, Osun", "options": ["Erin Ijesha Waterfall, Osun", "Gurara Falls, Niger", "Agbokim Falls, Cross River", "Owu Falls, Kwara"], "state": "Osun", "difficulty": "hard", "emoji": "💦", "clue": "Seven-step falls near Ilesa.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Erin_Ijesha_Waterfall.jpg/800px-Erin_Ijesha_Waterfall.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://commons.wikimedia.org/wiki/File:Erin_Ijesha_Waterfall.jpg" },
-  { "id": "kajuru-castle", "prompt": "Where is this?", "answer": "Kajuru Castle, Kaduna", "options": ["Kajuru Castle, Kaduna", "Obudu Ranch, Cross River", "Rojenny Resort, Anambra", "La Campagne, Lagos"], "state": "Kaduna", "difficulty": "hard", "emoji": "🏰", "clue": "German-style castle in the savannah.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Kajuru_Castle.jpg/800px-Kajuru_Castle.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Kajuru_Castle" },
-  { "id": "tbs", "prompt": "Where is this?", "answer": "Tafawa Balewa Square, Lagos", "options": ["Tafawa Balewa Square, Lagos", "Eagle Square, Abuja", "Liberty Stadium, Ibadan", "Lekki Coliseum, Lagos"], "state": "Lagos", "difficulty": "medium", "emoji": "🐎", "clue": "Independence parade ground on Lagos Island.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Tafawa_Balewa_Square.jpg/800px-Tafawa_Balewa_Square.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Tafawa_Balewa_Square" },
-  { "id": "uyo-stadium", "prompt": "Where is this?", "answer": "Godswill Akpabio Stadium, Uyo", "options": ["Godswill Akpabio Stadium, Uyo", "MKO Abiola Stadium, Abuja", "Teslim Balogun Stadium, Lagos", "Adokiye Stadium, PH"], "state": "Akwa Ibom", "difficulty": "medium", "emoji": "🏟️", "clue": "Nest of Champions, Super Eagles home.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Godswill_Akpabio_International_Stadium_-_front_view.jpg/800px-Godswill_Akpabio_International_Stadium_-_front_view.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Akwa_Ibom_Stadium" },
-  { "id": "yankari", "prompt": "Where is this?", "answer": "Yankari Game Reserve, Bauchi", "options": ["Yankari Game Reserve, Bauchi", "Kainji Park, Niger", "Cross River Park", "Chad Basin Park, Borno"], "state": "Bauchi", "difficulty": "hard", "emoji": "🐘", "clue": "Elephants + Wikki warm spring.", "verified": true, "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Yankari_Entry_Gate.jpg/800px-Yankari_Entry_Gate.jpg", "credit": "Wikimedia Commons", "creditUrl": "https://en.wikipedia.org/wiki/Yankari_Game_Reserve" },
-  { "id": "kano-walls", "prompt": "Where is this?", "answer": "Ancient Kano City Walls", "options": ["Ancient Kano City Walls", "Benin Moat, Edo", "Zaria City Walls", "Bauchi City Walls"], "state": "Kano", "difficulty": "medium", "emoji": "🧱", "clue": "15th-century walls around the old trading city.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Kano city wall" },
-  { "id": "awhum-falls", "prompt": "Where is this?", "answer": "Awhum Waterfall, Enugu", "options": ["Awhum Waterfall, Enugu", "Gurara Falls, Niger", "Owu Falls, Kwara", "Agbokim Falls, Cross River"], "state": "Enugu", "difficulty": "hard", "emoji": "💦", "clue": "Falls with a monastery cave nearby.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Awhum waterfall" },
-  { "id": "obudu-ranch", "prompt": "Where is this?", "answer": "Obudu Mountain Resort, Cross River", "options": ["Obudu Mountain Resort, Cross River", "Mambilla Plateau, Taraba", "Jos Plateau, Plateau", "Yankari, Bauchi"], "state": "Cross River", "difficulty": "easy", "emoji": "🏔️", "clue": "Cable car + temperate weather in the south.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Obudu" },
-  { "id": "argungu-festival", "prompt": "Which festival is this?", "answer": "Argungu Fishing Festival, Kebbi", "options": ["Argungu Fishing Festival, Kebbi", "Eyo Festival, Lagos", "Osun-Osogbo Festival", "Durbar Festival, Kano"], "state": "Kebbi", "difficulty": "medium", "emoji": "🎣", "clue": "Giant fish caught by hand in the river.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Argungu" },
-  { "id": "osun-grove", "prompt": "Where is this?", "answer": "Osun-Osogbo Sacred Grove", "options": ["Osun-Osogbo Sacred Grove", "Idanre Hills, Ondo", "Kamuku Park, Kaduna", "Okomu Park, Edo"], "state": "Osun", "difficulty": "medium", "emoji": "🌳", "clue": "UNESCO forest shrine, UNESCO listed 2005.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Osun-Osogbo" },
-  { "id": "idanre-hills", "prompt": "Where is this?", "answer": "Idanre Hills, Ondo", "options": ["Idanre Hills, Ondo", "Zuma Rock, Niger", "Shere Hills, Plateau", "Wase Rock, Plateau"], "state": "Ondo", "difficulty": "hard", "emoji": "⛰️", "clue": "660 steps to the old hilltop town.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Idanre" },
-  { "id": "lcc-canopy", "prompt": "Where is this?", "answer": "Lekki Conservation Centre, Lagos", "options": ["Lekki Conservation Centre, Lagos", "Nike Art Gallery, Lekki", "Freedom Park, Lagos", "Tarkwa Bay, Lagos"], "state": "Lagos", "difficulty": "easy", "emoji": "🐒", "clue": "Africa's longest canopy walkway.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Lekki Conservation Centre" },
-  { "id": "third-mainland", "prompt": "Where is this?", "answer": "Third Mainland Bridge, Lagos", "options": ["Third Mainland Bridge, Lagos", "Lekki-Ikoyi Link Bridge", "Carter Bridge, Lagos", "Eko Bridge, Lagos"], "state": "Lagos", "difficulty": "easy", "emoji": "🌉", "clue": "11.8km — longest bridge in Nigeria.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Third Mainland Bridge" },
-  { "id": "eagle-square", "prompt": "Where is this?", "answer": "Eagle Square, Abuja", "options": ["Eagle Square, Abuja", "Tafawa Balewa Square, Lagos", "Unity Fountain, Abuja", "Millennium Park, Abuja"], "state": "FCT", "difficulty": "medium", "emoji": "🦅", "clue": "Presidential inauguration ground.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Eagle Square Abuja" },
-  { "id": "millennium-park", "prompt": "Where is this?", "answer": "Millennium Park, Abuja", "options": ["Millennium Park, Abuja", "Freedom Park, Lagos", "Muri Okunola Park, Lagos", "Unity Park, Enugu"], "state": "FCT", "difficulty": "medium", "emoji": "🌴", "clue": "Biggest public park in the capital.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Millennium Park Abuja" },
-  { "id": "shere-hills", "prompt": "Where is this?", "answer": "Shere Hills, Plateau", "options": ["Shere Hills, Plateau", "Zuma Rock, Niger", "Riyom Rock, Plateau", "Wase Rock, Plateau"], "state": "Plateau", "difficulty": "hard", "emoji": "🏔️", "clue": "Highest point on the Jos Plateau.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Shere Hills" },
-  { "id": "sultan-palace", "prompt": "Where is this?", "answer": "Sultan's Palace, Sokoto", "options": ["Sultan's Palace, Sokoto", "Emir's Palace, Kano", "Ooni's Palace, Ife", "Shehu's Palace, Borno"], "state": "Sokoto", "difficulty": "hard", "emoji": "🕌", "clue": "Seat of the Sultan of Sokoto.", "verified": false, "imageUrl": null, "commonsHint": "Special:FilePath/Sultan palace Sokoto" }
+  {
+    "id": "lekki-ikoyi-bridge",
+    "prompt": "Where is this?",
+    "answer": "Lekki-Ikoyi Link Bridge, Lagos",
+    "options": [
+      "Lekki-Ikoyi Link Bridge, Lagos",
+      "Third Mainland Bridge, Lagos",
+      "Carter Bridge, Lagos",
+      "Eko Bridge, Lagos"
+    ],
+    "state": "Lagos",
+    "difficulty": "easy",
+    "emoji": "🌉",
+    "clue": "Cable-stayed bridge, toll gate, runs to Ikoyi.",
+    "verified": true,
+    "imageUrl": "/img/lekki-ikoyi-bridge.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Lekki-Ikoyi_Link_Bridge"
+  },
+  {
+    "id": "zuma-rock",
+    "prompt": "Where is this?",
+    "answer": "Zuma Rock, Niger State",
+    "options": [
+      "Zuma Rock, Niger State",
+      "Olumo Rock, Ogun State",
+      "Aso Rock, Abuja",
+      "Shere Hills, Plateau"
+    ],
+    "state": "Niger",
+    "difficulty": "easy",
+    "emoji": "⛰️",
+    "clue": "Giant monolith on the Abuja-Kaduna express.",
+    "verified": true,
+    "imageUrl": "/img/zuma-rock.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Zuma_Rock"
+  },
+  {
+    "id": "olumo-rock",
+    "prompt": "Where is this?",
+    "answer": "Olumo Rock, Abeokuta",
+    "options": [
+      "Olumo Rock, Abeokuta",
+      "Zuma Rock, Niger",
+      "Riyom Rock, Plateau",
+      "Wase Rock, Plateau"
+    ],
+    "state": "Ogun",
+    "difficulty": "medium",
+    "emoji": "🪨",
+    "clue": "Historic refuge rock in Egba land.",
+    "verified": true,
+    "imageUrl": "/img/olumo-rock.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Olumo_Rock"
+  },
+  {
+    "id": "national-mosque",
+    "prompt": "Where is this?",
+    "answer": "National Mosque, Abuja",
+    "options": [
+      "National Mosque, Abuja",
+      "Sultan Bello Mosque, Kaduna",
+      "Lagos Central Mosque",
+      "Kano Grand Mosque"
+    ],
+    "state": "FCT",
+    "difficulty": "medium",
+    "emoji": "🕌",
+    "clue": "Golden dome, Independence Ave, faces National Church.",
+    "verified": true,
+    "imageUrl": "/img/national-mosque.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Abuja_National_Mosque"
+  },
+  {
+    "id": "cocoa-house",
+    "prompt": "Where is this?",
+    "answer": "Cocoa House, Ibadan",
+    "options": [
+      "Cocoa House, Ibadan",
+      "NECOM House, Lagos",
+      "Eagle House, Kano",
+      "Bank of Industry, Abuja"
+    ],
+    "state": "Oyo",
+    "difficulty": "medium",
+    "emoji": "🏢",
+    "clue": "First skyscraper in West Africa, built from cocoa money.",
+    "verified": true,
+    "imageUrl": "/img/cocoa-house.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Cocoa_House"
+  },
+  {
+    "id": "aso-villa",
+    "prompt": "Where is this?",
+    "answer": "Aso Rock Villa, Abuja",
+    "options": [
+      "Aso Rock Villa, Abuja",
+      "Government House, Enugu",
+      "State House, Lagos",
+      "National Assembly, Abuja"
+    ],
+    "state": "FCT",
+    "difficulty": "hard",
+    "emoji": "🏛️",
+    "clue": "Presidential residence under the big rock.",
+    "verified": true,
+    "imageUrl": "/img/aso-villa.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Aso_Rock"
+  },
+  {
+    "id": "nike-gallery",
+    "prompt": "Where is this?",
+    "answer": "Nike Art Gallery, Lekki",
+    "options": [
+      "Nike Art Gallery, Lekki",
+      "National Museum, Lagos",
+      "Terra Kulture, VI",
+      "Mbari House, Owerri"
+    ],
+    "state": "Lagos",
+    "difficulty": "hard",
+    "emoji": "🎨",
+    "clue": "West Africa's biggest art collection, Lekki.",
+    "verified": true,
+    "imageUrl": "/img/nike-gallery.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Nike_Art_Gallery"
+  },
+  {
+    "id": "erin-ijesha",
+    "prompt": "Where is this?",
+    "answer": "Erin Ijesha Waterfall, Osun",
+    "options": [
+      "Erin Ijesha Waterfall, Osun",
+      "Gurara Falls, Niger",
+      "Agbokim Falls, Cross River",
+      "Owu Falls, Kwara"
+    ],
+    "state": "Osun",
+    "difficulty": "hard",
+    "emoji": "💦",
+    "clue": "Seven-step falls near Ilesa.",
+    "verified": true,
+    "imageUrl": "/img/erin-ijesha.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://commons.wikimedia.org/wiki/File:Erin_Ijesha_Waterfall.jpg"
+  },
+  {
+    "id": "kajuru-castle",
+    "prompt": "Where is this?",
+    "answer": "Kajuru Castle, Kaduna",
+    "options": [
+      "Kajuru Castle, Kaduna",
+      "Obudu Ranch, Cross River",
+      "Rojenny Resort, Anambra",
+      "La Campagne, Lagos"
+    ],
+    "state": "Kaduna",
+    "difficulty": "hard",
+    "emoji": "🏰",
+    "clue": "German-style castle in the savannah.",
+    "verified": true,
+    "imageUrl": "/img/kajuru-castle.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Kajuru_Castle"
+  },
+  {
+    "id": "tbs",
+    "prompt": "Where is this?",
+    "answer": "Tafawa Balewa Square, Lagos",
+    "options": [
+      "Tafawa Balewa Square, Lagos",
+      "Eagle Square, Abuja",
+      "Liberty Stadium, Ibadan",
+      "Lekki Coliseum, Lagos"
+    ],
+    "state": "Lagos",
+    "difficulty": "medium",
+    "emoji": "🐎",
+    "clue": "Independence parade ground on Lagos Island.",
+    "verified": true,
+    "imageUrl": "/img/tbs.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Tafawa_Balewa_Square"
+  },
+  {
+    "id": "uyo-stadium",
+    "prompt": "Where is this?",
+    "answer": "Godswill Akpabio Stadium, Uyo",
+    "options": [
+      "Godswill Akpabio Stadium, Uyo",
+      "MKO Abiola Stadium, Abuja",
+      "Teslim Balogun Stadium, Lagos",
+      "Adokiye Stadium, PH"
+    ],
+    "state": "Akwa Ibom",
+    "difficulty": "medium",
+    "emoji": "🏟️",
+    "clue": "Nest of Champions, Super Eagles home.",
+    "verified": true,
+    "imageUrl": "/img/uyo-stadium.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Akwa_Ibom_Stadium"
+  },
+  {
+    "id": "yankari",
+    "prompt": "Where is this?",
+    "answer": "Yankari Game Reserve, Bauchi",
+    "options": [
+      "Yankari Game Reserve, Bauchi",
+      "Kainji Park, Niger",
+      "Cross River Park",
+      "Chad Basin Park, Borno"
+    ],
+    "state": "Bauchi",
+    "difficulty": "hard",
+    "emoji": "🐘",
+    "clue": "Elephants + Wikki warm spring.",
+    "verified": true,
+    "imageUrl": "/img/yankari.jpg",
+    "credit": "Wikimedia Commons",
+    "creditUrl": "https://en.wikipedia.org/wiki/Yankari_Game_Reserve"
+  },
+  {
+    "id": "kano-walls",
+    "prompt": "Where is this?",
+    "answer": "Ancient Kano City Walls",
+    "options": [
+      "Ancient Kano City Walls",
+      "Benin Moat, Edo",
+      "Zaria City Walls",
+      "Bauchi City Walls"
+    ],
+    "state": "Kano",
+    "difficulty": "medium",
+    "emoji": "🧱",
+    "clue": "15th-century walls around the old trading city.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Kano city wall"
+  },
+  {
+    "id": "awhum-falls",
+    "prompt": "Where is this?",
+    "answer": "Awhum Waterfall, Enugu",
+    "options": [
+      "Awhum Waterfall, Enugu",
+      "Gurara Falls, Niger",
+      "Owu Falls, Kwara",
+      "Agbokim Falls, Cross River"
+    ],
+    "state": "Enugu",
+    "difficulty": "hard",
+    "emoji": "💦",
+    "clue": "Falls with a monastery cave nearby.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Awhum waterfall"
+  },
+  {
+    "id": "obudu-ranch",
+    "prompt": "Where is this?",
+    "answer": "Obudu Mountain Resort, Cross River",
+    "options": [
+      "Obudu Mountain Resort, Cross River",
+      "Mambilla Plateau, Taraba",
+      "Jos Plateau, Plateau",
+      "Yankari, Bauchi"
+    ],
+    "state": "Cross River",
+    "difficulty": "easy",
+    "emoji": "🏔️",
+    "clue": "Cable car + temperate weather in the south.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Obudu"
+  },
+  {
+    "id": "argungu-festival",
+    "prompt": "Which festival is this?",
+    "answer": "Argungu Fishing Festival, Kebbi",
+    "options": [
+      "Argungu Fishing Festival, Kebbi",
+      "Eyo Festival, Lagos",
+      "Osun-Osogbo Festival",
+      "Durbar Festival, Kano"
+    ],
+    "state": "Kebbi",
+    "difficulty": "medium",
+    "emoji": "🎣",
+    "clue": "Giant fish caught by hand in the river.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Argungu"
+  },
+  {
+    "id": "osun-grove",
+    "prompt": "Where is this?",
+    "answer": "Osun-Osogbo Sacred Grove",
+    "options": [
+      "Osun-Osogbo Sacred Grove",
+      "Idanre Hills, Ondo",
+      "Kamuku Park, Kaduna",
+      "Okomu Park, Edo"
+    ],
+    "state": "Osun",
+    "difficulty": "medium",
+    "emoji": "🌳",
+    "clue": "UNESCO forest shrine, UNESCO listed 2005.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Osun-Osogbo"
+  },
+  {
+    "id": "idanre-hills",
+    "prompt": "Where is this?",
+    "answer": "Idanre Hills, Ondo",
+    "options": [
+      "Idanre Hills, Ondo",
+      "Zuma Rock, Niger",
+      "Shere Hills, Plateau",
+      "Wase Rock, Plateau"
+    ],
+    "state": "Ondo",
+    "difficulty": "hard",
+    "emoji": "⛰️",
+    "clue": "660 steps to the old hilltop town.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Idanre"
+  },
+  {
+    "id": "lcc-canopy",
+    "prompt": "Where is this?",
+    "answer": "Lekki Conservation Centre, Lagos",
+    "options": [
+      "Lekki Conservation Centre, Lagos",
+      "Nike Art Gallery, Lekki",
+      "Freedom Park, Lagos",
+      "Tarkwa Bay, Lagos"
+    ],
+    "state": "Lagos",
+    "difficulty": "easy",
+    "emoji": "🐒",
+    "clue": "Africa's longest canopy walkway.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Lekki Conservation Centre"
+  },
+  {
+    "id": "third-mainland",
+    "prompt": "Where is this?",
+    "answer": "Third Mainland Bridge, Lagos",
+    "options": [
+      "Third Mainland Bridge, Lagos",
+      "Lekki-Ikoyi Link Bridge",
+      "Carter Bridge, Lagos",
+      "Eko Bridge, Lagos"
+    ],
+    "state": "Lagos",
+    "difficulty": "easy",
+    "emoji": "🌉",
+    "clue": "11.8km — longest bridge in Nigeria.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Third Mainland Bridge"
+  },
+  {
+    "id": "eagle-square",
+    "prompt": "Where is this?",
+    "answer": "Eagle Square, Abuja",
+    "options": [
+      "Eagle Square, Abuja",
+      "Tafawa Balewa Square, Lagos",
+      "Unity Fountain, Abuja",
+      "Millennium Park, Abuja"
+    ],
+    "state": "FCT",
+    "difficulty": "medium",
+    "emoji": "🦅",
+    "clue": "Presidential inauguration ground.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Eagle Square Abuja"
+  },
+  {
+    "id": "millennium-park",
+    "prompt": "Where is this?",
+    "answer": "Millennium Park, Abuja",
+    "options": [
+      "Millennium Park, Abuja",
+      "Freedom Park, Lagos",
+      "Muri Okunola Park, Lagos",
+      "Unity Park, Enugu"
+    ],
+    "state": "FCT",
+    "difficulty": "medium",
+    "emoji": "🌴",
+    "clue": "Biggest public park in the capital.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Millennium Park Abuja"
+  },
+  {
+    "id": "shere-hills",
+    "prompt": "Where is this?",
+    "answer": "Shere Hills, Plateau",
+    "options": [
+      "Shere Hills, Plateau",
+      "Zuma Rock, Niger",
+      "Riyom Rock, Plateau",
+      "Wase Rock, Plateau"
+    ],
+    "state": "Plateau",
+    "difficulty": "hard",
+    "emoji": "🏔️",
+    "clue": "Highest point on the Jos Plateau.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Shere Hills"
+  },
+  {
+    "id": "sultan-palace",
+    "prompt": "Where is this?",
+    "answer": "Sultan's Palace, Sokoto",
+    "options": [
+      "Sultan's Palace, Sokoto",
+      "Emir's Palace, Kano",
+      "Ooni's Palace, Ife",
+      "Shehu's Palace, Borno"
+    ],
+    "state": "Sokoto",
+    "difficulty": "hard",
+    "emoji": "🕌",
+    "clue": "Seat of the Sultan of Sokoto.",
+    "verified": false,
+    "imageUrl": null,
+    "commonsHint": "Special:FilePath/Sultan palace Sokoto"
+  }
 ]
