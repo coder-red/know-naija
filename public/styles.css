@@ -185,6 +185,32 @@ input:focus, select:focus { border-color: var(--acc); box-shadow: 0 0 0 3px #22c
   background: #000b; color: #fff; border: 1.5px solid #ffffff44;
   border-radius: 999px; padding: 4px 11px;
 }
+/* status dots + rank chips replace emoji markers */
+.cdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+.cdot.c1 { background: var(--acc); } .cdot.c2 { background: var(--acc2); } .cdot.c3 { background: #5aa9ff; }
+.mdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.mdot.on { background: var(--acc); box-shadow: 0 0 8px #22c55e88; }
+.mdot.off { background: #ffffff2c; }
+.crank {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 8px; margin-right: 7px;
+  font-family: var(--font-d); font-size: 12px; font-weight: 800;
+  background: #ffffff12; border: 1.5px solid var(--line); vertical-align: -6px;
+}
+.crank.r1 { background: var(--acc2); border-color: var(--acc2); color: #1a1000; }
+/* monogram photo tile: loading + fallback state, zero emoji */
+.photile {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  background:
+    repeating-linear-gradient(-55deg, #ffffff09 0 2px, transparent 2px 22px),
+    linear-gradient(135deg, #182a4a, #101a33 55%, #0d2b22);
+}
+.photile span {
+  font-family: var(--font-d); font-weight: 800; font-size: 64px; letter-spacing: -2px;
+  color: transparent; -webkit-text-stroke: 2px #ffffff55;
+}
+.photile small { position: static; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--mut); text-shadow: none; }
 .credit { font-size: 12px; color: var(--mut); margin: 6px 2px 0; }
 .credit a { color: var(--mut); }
 .clue {
@@ -264,7 +290,7 @@ input:focus, select:focus { border-color: var(--acc); box-shadow: 0 0 0 3px #22c
 .foot { text-align: center; color: var(--mut); font-size: 12px; padding: 18px 12px calc(18px + var(--safe-b)); }
 
 /* ---------- confetti ---------- */
-.confetti { position: fixed; top: -40px; z-index: 50; pointer-events: none; animation: fall 2.6s ease-in forwards; }
+.confetti { position: fixed; top: -20px; z-index: 50; pointer-events: none; animation: fall 2.6s ease-in forwards; }
 @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
 /* ---------- bigger phones / tablets ---------- */

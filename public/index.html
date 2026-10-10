@@ -14,7 +14,7 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><button id="nav-brand" class="brandbtn" title="Go home">🇳🇬 Know <span>Naija</span></button></div>
+    <div class="brand"><button id="nav-brand" class="brandbtn" title="Go home">Know <span>Naija</span></button></div>
     <div class="top-right"><span id="pill-room" class="pill">room: lasgidi-1</span><span id="pill-players" class="pill">20 in room</span><button id="nav-home" class="navbtn" title="Go home">⌂ Home</button></div>
   </header>
 
@@ -22,12 +22,12 @@
     <!-- HOME -->
     <section id="screen-home" class="card">
       <div class="hero-eyebrow"><span class="livedot"></span> LIVE &bull; NAIJA TRIVIA ROOMS</div>
-      <h1 class="hero-title">Where is <em>this?</em> &#127758;</h1>
+      <h1 class="hero-title">Where is <em>this?</em></h1>
       <p class="sub">Live elimination quiz. 20 enter. 7 pics. Last ones standing chop the points. <b>No dulling.</b></p>
-      <div class="hero-chips"><span>&#9889; 3-min rooms</span><span>&#128293; streaks</span><span>&#127758; city war</span></div>
+      <div class="hero-chips"><span><i class="cdot c1"></i>3-min rooms</span><span><i class="cdot c2"></i>Daily streaks</span><span><i class="cdot c3"></i>City war</span></div>
       <p class="me">Playing as <b id="me-handle">…</b> <span class="tiny">(username will come from Lagos Life when the API lands)</span></p>
-      <p class="me streakline">🔥 <b id="me-streak">0-day streak</b> <span id="me-freeze" class="tiny"></span></p>
-      <p class="me questline">🎯 Daily quest: <b id="me-quest">survive 3 rounds (+30xp)</b></p>
+      <p class="me streakline"><b id="me-streak">No streak yet</b> <span id="me-freeze" class="tiny"></span></p>
+      <p class="me questline">Daily quest: <b id="me-quest">survive 3 rounds (+30 XP)</b></p>
       <label class="lbl">City team — rep your side
         <select id="in-team">
           <option>Lagos</option>
@@ -36,21 +36,21 @@
           <option>Diaspora</option>
         </select>
       </label>
-      <button id="btn-join" class="btn big">Join room ⚡</button>
+      <button id="btn-join" class="btn big">Join room</button>
       <div class="row">
-        <div><h3>🏆 Top players <button id="btn-board" class="link">refresh</button></h3><ol id="home-board" class="board"><li>…loading</li></ol></div>
-        <div><h3>🌍 City battle <span id="home-week" class="tiny"></span></h3><div id="home-cities" class="cities"><p class="tiny">…loading</p></div></div>
+        <div><h3>Top players <button id="btn-board" class="link">refresh</button></h3><ol id="home-board" class="board"><li>…loading</li></ol></div>
+        <div><h3>City battle <span id="home-week" class="tiny"></span></h3><div id="home-cities" class="cities"><p class="tiny">…loading</p></div></div>
       </div>
       <div class="row">
         <div><h3>How it works</h3><ol class="how"><li>7 rounds, 10s per pic</li><li>Wrong answer = lose 1 life (you get 2)</li><li>Fast + streak = more points</li></ol></div>
-        <div><h3>Leagues</h3><ol class="how"><li>Street → Area Boy → Omo Eko → Lasgidi Legend</li><li>Every point feeds your city team</li></ol></div>
+        <div><h3>Leagues</h3><ol class="how"><li>JJC → Hustler → Omo Naija → Naija Legend</li><li>Every point feeds your city team</li></ol></div>
       </div>
     </section>
 
     <!-- GAME -->
     <section id="screen-game" class="card game-card hidden">
       <div class="game-top">
-        <div class="hud-left">ROUND <b id="g-round">1</b>/7 <span class="hud-sep">•</span> ❤️ <b id="g-lives">2</b> <span class="hud-sep">•</span> 🔥 <b id="g-streak">0</b></div>
+        <div class="hud-left">ROUND <b id="g-round">1</b>/7 <span class="hud-sep">•</span> LIFE <b id="g-lives">2</b> <span class="hud-sep">•</span> STREAK <b id="g-streak">0</b></div>
         <div class="g-right">SCORE <b id="g-score">0</b> <button id="btn-quit" class="quit" title="Leave room">✕ Quit</button></div>
       </div>
       <div class="timer"><div id="g-timerbar"></div></div>
@@ -66,7 +66,7 @@
         </div>
         <aside class="game-side">
           <div class="roommain"><h3>Room leaderboard (live)</h3><ol id="g-roomboard" class="board"></ol></div>
-          <div class="roomside"><h3>Host 🤖</h3><p id="g-host" class="host">No dulling! First pic don land.</p></div>
+          <div class="roomside"><h3>Host</h3><p id="g-host" class="host">No dulling. First pic don land.</p></div>
         </aside>
       </div>
     </section>
@@ -74,13 +74,13 @@
     <!-- OVER -->
     <section id="screen-over" class="card hidden">
       <div id="o-rank" class="rankring">#&ndash;</div>
-      <h1 id="o-title" class="o-title">You survive? 🎉</h1>
+      <h1 id="o-title" class="o-title">You survive?</h1>
       <p id="o-sub" class="sub"></p>
       <p id="o-stats" class="statsline"></p>
       <div class="stats"><div><span id="o-score">0</span><small>score</small></div><div><span id="o-xp">0</span><small>xp earned</small></div><div><span id="o-league">Street</span><small>league</small></div></div>
       <h3>Room result</h3><ol id="o-board" class="board"></ol>
-      <h3>🌍 City battle</h3><div id="o-cities" class="cities"></div>
-      <div class="btnrow"><button id="btn-again" class="btn big">Rematch ⚡</button><button id="btn-home" class="btn ghost">⌂ Home</button></div>
+      <h3>City battle</h3><div id="o-cities" class="cities"></div>
+      <div class="btnrow"><button id="btn-again" class="btn big">Rematch</button><button id="btn-home" class="btn ghost">⌂ Home</button></div>
     </section>
   </main>
 

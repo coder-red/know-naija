@@ -11,13 +11,13 @@ function show(id) {
 }
 
 const HOST_LINES = {
-  start: ["No dulling! First pic don land.", "20 enter, few go survive. Na you?", "Diaspora vs home-based — make una show sef."],
-  right: ["Na so! Sharp eyes 👀", "Correct! You be real Omo Naija.", "Too fast. NEPA no fit catch you."],
-  wrong: ["E remain 1 life o! Focus.", "Wrong! That one na setup.", "Omo — you fall my hand small."],
-  spare: ["HOST SPARES YOU! One Chance used — no more shakara."],
-  elim: ["You don comot — predict the winner for +50xp!", "Out! Call the winner, still chop XP."],
-  win: ["LASGIDI LEGEND! Take your crown 👑", "You sabi Nigeria pass INEC!"],
-  savage: ["🔥 SAVAGE ROUND — last pic, DOUBLE points. No fear!"],
+  start: ["No dulling. First pic don land.", "20 enter, few go survive. Na you?", "Home vs diaspora. Show yourself."],
+  right: ["Na so. Sharp eyes.", "Correct. You be real Omo Naija.", "Too fast. NEPA no fit catch you."],
+  wrong: ["One life left. Focus.", "Wrong. That one na setup.", "You fall my hand small."],
+  spare: ["HOST SPARES YOU. One Chance used. No more shakara."],
+  elim: ["Eliminated. Predict the winner for +50 XP.", "Out. Call the winner, still chop XP."],
+  win: ["NAIJA LEGEND. Take the crown.", "You sabi Nigeria well well."],
+  savage: ["SAVAGE ROUND. Last pic, DOUBLE points. No fear."],
 };
 
 const GUEST_POOL = ["DanfoStar", "AmalaAce", "NEPAProof", "OwambePro", "SuyaSavant", "JapaDream", "MolueMind", "AsoRocky", "LekkiGhost", "ZumaZoom"];
@@ -88,11 +88,11 @@ function questBump(survived) {
 }
 function refreshMeta() {
   const { streak, freeze } = streakInfo();
-  $("me-streak").textContent = streak > 0 ? `${streak}-day streak` : "0-day streak — play a room to start one";
-  $("me-freeze").textContent = freeze > 0 ? `❄️ ${freeze} freeze${freeze > 1 ? "s" : ""} banked` : "";
+  $("me-streak").textContent = streak > 0 ? `${streak}-day streak` : "No streak yet — play a room to start one";
+  $("me-freeze").textContent = freeze > 0 ? `${freeze} freeze banked` : "";
   const q = questProg();
   const fresh = q.date === localDay();
-  $("me-quest").textContent = fresh && q.done ? `done today ✅ (best ${q.best}/7)` : `survive 3 rounds (+30xp)${fresh ? ` — best today ${q.best}/7` : ""}`;
+  $("me-quest").textContent = fresh && q.done ? `done today (best ${q.best}/7)` : `survive 3 rounds (+30 XP)${fresh ? ` — best today ${q.best}/7` : ""}`;
 }
 
 async function loadQuestions() {
@@ -115,19 +115,31 @@ function roomPool() {
 }
 
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+// Monogram tile for missing/failed photos — no emoji, no leaks.
+function stateCode(s) { return String(s || "?").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase(); }
+function setPic(q) {
+  const box = $("g-pic");
+  const tile = `<div class="photile"><span>${stateCode(q.state)}</span><small>${escapeHtml(q.state)} · photo coming soon</small></div>`;
+  box.innerHTML = tile; // tile doubles as the loading state
+  if (!q.imageUrl) return;
+  const im = new Image();
+  im.alt = "Where is this?";
+  im.onload = () => { box.innerHTML = ""; box.appendChild(im); };
+  im.src = q.imageUrl;
+}
+// League ladder is national, not Lagos-only: JJC -> Hustler -> Omo Naija -> Naija Legend.
 function leagueFor(xp) {
-  if (xp >= 1500) return "Lasgidi Legend";
-  if (xp >= 800) return "Omo Eko";
-  if (xp >= 350) return "Area Boy";
-  return "Street";
+  if (xp >= 1500) return "Naija Legend";
+  if (xp >= 800) return "Omo Naija";
+  if (xp >= 350) return "Hustler";
+  return "JJC";
 }
 
 function renderCities(el, cities) {
   if (!cities || !cities.length) { el.innerHTML = "<p class='tiny'>No points yet. Be the first.</p>"; return; }
   const max = Math.max(1, ...cities.map((c) => c.xp));
-  const medal = ["🥇", "🥈", "🥉", "4️⃣"];
   el.innerHTML = cities.map((c, i) =>
-    `<div class="cityrow"><span class="cityname">${medal[i] || ""} ${escapeHtml(c.team)}</span>` +
+    `<div class="cityrow"><span class="cityname"><span class="crank r${i + 1}">${i + 1}</span> ${escapeHtml(c.team)}</span>` +
     `<div class="citybar"><div style="width:${Math.max(3, Math.round((c.xp / max) * 100))}%"></div></div>` +
     `<span class="cityxp">${c.xp}xp · ${c.players} players</span></div>`).join("");
 }
@@ -170,7 +182,7 @@ function renderRoomBoard() {
     ...state.bots.map((b) => ({ name: b.name, score: b.score, alive: b.alive }))];
   rows.sort((a, b) => b.score - a.score);
   $("g-roomboard").innerHTML = rows.slice(0, 10).map((r) =>
-    `<li>${r.alive ? "🟢" : "🔴"} <b>${escapeHtml(r.name)}</b> — ${r.score}${r.me ? " ←" : ""}</li>`).join("");
+    `<li><span class="mdot ${r.alive ? "on" : "off"}"></span><b>${escapeHtml(r.name)}</b> — ${r.score}${r.me ? " ←" : ""}</li>`).join("");
   $("pill-players").textContent = `${aliveCount()} alive / 20`;
 }
 
@@ -186,16 +198,11 @@ function playRound() {
   $("g-lives").textContent = state.player.lives;
   $("g-streak").textContent = state.player.streak;
   $("g-score").textContent = state.player.score;
-  if (q.imageUrl) {
-    $("g-pic").innerHTML = `<img src="${q.imageUrl}" alt="Where is this?" loading="eager" onerror="this.outerHTML='<div style=&quot;font-size:88px&quot;>${q.emoji}</div>'" />`;
-    $("g-credit").innerHTML = q.creditUrl
-      ? `📷 <a href="${q.creditUrl}" target="_blank" rel="noopener">${escapeHtml(q.credit || "Wikimedia Commons")}</a>`
-      : "";
-  } else {
-    $("g-pic").innerHTML = `<div>${q.emoji}<small>pic ${roundNo} • ${escapeHtml(q.state)} • photo dropping soon</small></div>`;
-    $("g-credit").innerHTML = "";
-  }
-  $("g-clue").textContent = (isSavage ? "🔥 SAVAGE — 2x points! " : "") + "💡 " + q.clue;
+  setPic(q);
+  // Anti-cheat: no credit link while answering (the article title gives it away).
+  // Plain-text credit appears only after the answer is revealed — see answer().
+  $("g-credit").textContent = "";
+  $("g-clue").textContent = (isSavage ? "SAVAGE · 2x points — " : "") + q.clue;
   $("g-feed").textContent = isSavage ? pick(HOST_LINES.savage) : "";
   $("g-predict").classList.add("hidden");
   $("g-predict").innerHTML = "";
@@ -235,14 +242,14 @@ function offerPredict() {
   const box = $("g-predict");
   const cands = [...state.bots].filter((b) => b.alive).sort((a, b) => b.score - a.score).slice(0, 3);
   if (!cands.length) return;
-  box.innerHTML = `<span>Who wins? (+50xp if you call it)</span>` +
+  box.innerHTML = `<span>Eliminated? Call the winner (+50 XP if you are right)</span>` +
     cands.map((b) => `<button data-n="${escapeHtml(b.name)}">${escapeHtml(b.name)}</button>`).join("");
   box.classList.remove("hidden");
   box.querySelectorAll("button").forEach((btn) => {
     btn.onclick = () => {
       state.player.predict = btn.dataset.n;
       box.classList.add("hidden");
-      $("g-feed").textContent = `Locked: ${state.player.predict} to win. No pressure. 👀`;
+      $("g-feed").textContent = `Locked: ${state.player.predict} to win.`;
     };
   });
 }
@@ -261,6 +268,8 @@ function answer(op, btn) {
     if (b.dataset.opt === q.answer) b.classList.add("right");
     else if (b === btn && !correct) { b.classList.add("wrong", "shake"); }
   });
+  // Answer is out — safe to show the plain-text photo credit (never a link).
+  $("g-credit").textContent = q.imageUrl ? "Photo: Wikimedia Commons" : "";
 
   if (correct && state.player.alive) {
     const gained = Math.round((100 + secsLeft * 10 + state.player.streak * 25) * savageMult);
@@ -318,15 +327,19 @@ function answer(op, btn) {
   }, state.player.alive ? 1600 : 2600); // spectating? slower pace, time to predict
 }
 
-function confetti(n = 26) {
-  const em = ["🎉", "🇳🇬", "⭐", "👑", "🎊"];
+// Paper confetti in brand colors — no emoji rain.
+function confetti(n = 30) {
+  const cols = ["#22c55e", "#f5a30b", "#e21b3c", "#1368ce", "#ffffff"];
   for (let i = 0; i < n; i++) {
     const s = document.createElement("span");
     s.className = "confetti";
-    s.textContent = pick(em);
+    const size = 7 + Math.random() * 8;
+    s.style.width = size + "px";
+    s.style.height = (Math.random() < 0.45 ? size : size * 0.45) + "px";
+    if (Math.random() < 0.4) s.style.borderRadius = "50%";
+    s.style.background = pick(cols);
     s.style.left = Math.random() * 100 + "%";
     s.style.animationDelay = (Math.random() * 0.8) + "s";
-    s.style.fontSize = (16 + Math.random() * 22) + "px";
     document.body.appendChild(s);
     setTimeout(() => s.remove(), 3200);
   }
@@ -347,13 +360,13 @@ async function endGame() {
   const xp = Math.round(state.player.score / 10 + (won ? 150 : 0) + state.player.maxStreak * 5 + survived * 10 + oracle + streakBonus + questBonus);
   const acc = state.player.answered ? Math.round((state.player.correct / state.player.answered) * 100) : 0;
 
-  $("o-title").textContent = won ? "You win the room! 👑" : state.player.alive ? `Survived! #${pos} of 20` : `Eliminated — #${pos} of 20`;
-  let sub = won ? pick(HOST_LINES.win) + ` +${xp}xp for Team ${state.player.team}.` : `+${xp}xp for Team ${state.player.team}. Hit rematch — one more run.`;
-  if (oracle) sub += " Called the winner! 🔮 +50xp.";
-  if (froze) sub += " Freeze saved your streak ❄️.";
-  if (questBonus) sub += " Daily quest done 🎯 +30xp.";
+  $("o-title").textContent = won ? "You win the room!" : state.player.alive ? `Survived! #${pos} of 20` : `Eliminated — #${pos} of 20`;
+  let sub = won ? pick(HOST_LINES.win) + ` +${xp} XP for Team ${state.player.team}.` : `+${xp} XP for Team ${state.player.team}. Hit rematch — one more run.`;
+  if (oracle) sub += " Called the winner. Oracle +50 XP.";
+  if (froze) sub += " Freeze saved your streak.";
+  if (questBonus) sub += " Daily quest done. +30 XP.";
   $("o-sub").textContent = sub;
-  $("o-stats").textContent = `🎯 ${acc}% accuracy • 🔥 best combo x${state.player.maxStreak} • 🛡️ ${survived}/${state.rounds.length} survived • 🔥 ${streak}-day streak`;
+  $("o-stats").textContent = `Accuracy ${acc}% · Best combo x${state.player.maxStreak} · Survived ${survived}/${state.rounds.length} · ${streak}-day streak`;
   $("o-score").textContent = state.player.score;
   $("o-xp").textContent = xp;
 
@@ -361,7 +374,7 @@ async function endGame() {
   const isPB = state.player.score > prevBest && state.player.score > 0;
   if (isPB) {
     localStorage.setItem("kn_best", state.player.score);
-    $("o-stats").textContent += " • NEW PB! 🎉";
+    $("o-stats").textContent += " · NEW PERSONAL BEST";
   }
   if (won || isPB) confetti();
 
