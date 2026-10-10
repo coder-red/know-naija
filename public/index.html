@@ -10,8 +10,8 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">🇳🇬 Know <span>Naija</span></div>
-    <div class="top-right"><span id="pill-room" class="pill">room: lasgidi-1</span><span id="pill-players" class="pill">20 in room</span></div>
+    <div class="brand"><button id="nav-brand" class="brandbtn" title="Go home">🇳🇬 Know <span>Naija</span></button></div>
+    <div class="top-right"><span id="pill-room" class="pill">room: lasgidi-1</span><span id="pill-players" class="pill">20 in room</span><button id="nav-home" class="navbtn" title="Go home">⌂ Home</button></div>
   </header>
 
   <main class="wrap">
@@ -43,7 +43,7 @@
     <section id="screen-game" class="card hidden">
       <div class="game-top">
         <div>Round <b id="g-round">1</b>/7 • ❤️ <b id="g-lives">2</b> • 🔥 <b id="g-streak">0</b></div>
-        <div>Score <b id="g-score">0</b></div>
+        <div class="g-right">Score <b id="g-score">0</b> <button id="btn-quit" class="quit" title="Leave room">✕ Quit</button></div>
       </div>
       <div class="timer"><div id="g-timerbar"></div></div>
       <div id="g-pic" class="pic" aria-live="polite"></div>
@@ -64,7 +64,7 @@
       <div class="stats"><div><span id="o-score">0</span><small>score</small></div><div><span id="o-xp">0</span><small>xp earned</small></div><div><span id="o-league">Street</span><small>league</small></div></div>
       <h3>Room result</h3><ol id="o-board" class="board"></ol>
       <h3>🌍 City battle</h3><div id="o-cities" class="cities"></div>
-      <div class="btnrow1"><button id="btn-again" class="btn big">Rematch ⚡</button></div>
+      <div class="btnrow"><button id="btn-again" class="btn big">Rematch ⚡</button><button id="btn-home" class="btn ghost">⌂ Home</button></div>
     </section>
   </main>
 

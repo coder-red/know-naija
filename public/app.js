@@ -19,6 +19,17 @@ const shuffle = (a) => [...a].sort(() => Math.random() - 0.5);
 
 let QUESTIONS = [];
 let state = null;
+let session = 0; // bumped on join/quit — stale timers check this before acting
+
+// ---- nav: quitting must kill timers so the room can't "continue" behind you ----
+function goHome() {
+  session += 1;
+  clearInterval(timerInt);
+  state = null;
+  $("pill-players").textContent = "20 in room";
+  show("screen-home");
+  loadBoards();
+}
 
 // ---- identity: guest handle, Lagos Life swaps this later ----
 function myHandle() {
@@ -136,7 +147,9 @@ function playRound() {
   clearInterval(timerInt);
   const bar = $("g-timerbar");
   const t0 = performance.now();
+  const mySession = session;
   timerInt = setInterval(() => {
+    if (mySession !== session) { clearInterval(timerInt); return; }
     const left = 10 - (performance.now() - t0) / 1000;
     bar.style.width = Math.max(0, (left / 10) * 100) + "%";
     if (left <= 0) { clearInterval(timerInt); answer(null, null); }
@@ -193,7 +206,9 @@ function answer(op, btn) {
   $("g-score").textContent = state.player.score;
   renderRoomBoard();
 
+  const mySession = session;
   setTimeout(() => {
+    if (mySession !== session) return; // user quit — stay home
     state.idx += 1;
     if (state.idx >= state.rounds.length || (!state.player.alive && aliveCount() <= 1)) endGame();
     else playRound();
@@ -238,11 +253,16 @@ $("btn-join").onclick = async () => {
   localStorage.setItem("kn_team", team);
   if (!QUESTIONS.length) await loadQuestions();
   if (!QUESTIONS.length) { alert("Questions failed to load. Is the server running?"); return; }
+  session += 1;
   state = newRoom({ name: myHandle(), team });
   show("screen-game");
   playRound();
 };
-$("btn-again").onclick = () => { state = newRoom({ name: myHandle(), team: localStorage.getItem("kn_team") || "Lagos" }); show("screen-game"); playRound(); };
+$("btn-again").onclick = () => { session += 1; state = newRoom({ name: myHandle(), team: localStorage.getItem("kn_team") || "Lagos" }); show("screen-game"); playRound(); };
+$("btn-home").onclick = goHome;
+$("btn-quit").onclick = goHome;
+$("nav-home").onclick = goHome;
+$("nav-brand").onclick = goHome;
 $("btn-board").onclick = () => loadBoards();
 
 (async () => {

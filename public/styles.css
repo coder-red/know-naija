@@ -1,7 +1,12 @@
 :root { --bg:#0b1020; --card:#141b33; --ink:#f2f5ff; --mut:#9aa6c7; --acc:#22c55e; --acc2:#f59e0b; --line:#243056; }
 * { box-sizing:border-box; } body { margin:0; background:radial-gradient(1200px 600px at 20% -10%, #1b2a5e 0%, var(--bg) 55%); color:var(--ink); font:16px/1.5 system-ui,Segoe UI,Roboto,Arial; min-height:100vh; }
 .topbar { display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid var(--line); position:sticky; top:0; background:#0b1020cc; backdrop-filter:blur(8px); }
-.brand { font-weight:800; font-size:20px; } .brand span { color:var(--acc); }
+.brand { font-weight:800; font-size:20px; } .brandbtn { background:none; border:0; color:var(--ink); font-weight:800; font-size:20px; cursor:pointer; padding:0; } .brandbtn span { color:var(--acc); }
+.navbtn { margin-left:8px; background:#0d1430; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:5px 12px; cursor:pointer; font-size:13px; }
+.navbtn:hover { border-color:var(--acc); }
+.g-right { display:flex; align-items:center; gap:8px; }
+.quit { background:transparent; color:var(--mut); border:1px solid var(--line); border-radius:8px; padding:4px 10px; cursor:pointer; font-size:13px; }
+.quit:hover { color:#ef4444; border-color:#ef4444; }
 .pill { border:1px solid var(--line); border-radius:999px; padding:4px 10px; margin-left:8px; font-size:12px; color:var(--mut); }
 .wrap { max-width:860px; margin:0 auto; padding:20px 16px 60px; }
 .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px; box-shadow:0 20px 60px #0008; }
