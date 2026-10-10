@@ -50,11 +50,30 @@ const MIME = {
   ".webmanifest": "application/manifest+json; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".ico": "image/x-icon",
 };
 
-function send(res, code, body, type = "text/plain; charset=utf-8") {
-  res.writeHead(code, { "Content-Type": type });
+// BUG FIX: photos were served as application/octet-stream; some browsers refuse to render that.
+function send(res, code, body, type = "text/plain; charset=utf-8", cache) {
+  const h = { "Content-Type": type };
+  if (cache) h["Cache-Control"] = cache;
+  res.writeHead(code, h);
   res.end(body);
+}
+
+// ISO week key, e.g. "2026-W41" — city battle resets every Monday (fresh aspiration, Duolingo-style).
+function weekKey(d = new Date()) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = (t.getUTCDay() + 6) % 7;
+  t.setUTCDate(t.getUTCDate() - day + 3);
+  const first = new Date(Date.UTC(t.getUTCFullYear(), 0, 4));
+  const fday = (first.getUTCDay() + 6) % 7;
+  first.setUTCDate(first.getUTCDate() - fday + 3);
+  return t.getUTCFullYear() + "-W" + String(1 + Math.round((t - first) / 6048e5)).padStart(2, "0");
 }
 
 function serveStatic(reqPath, res) {
@@ -62,6 +81,8 @@ function serveStatic(reqPath, res) {
   if (rel === "/") rel = "/index.html";
   const file = path.normalize(path.join(PUBLIC, rel));
   if (!file.startsWith(PUBLIC)) return send(res, 403, "forbidden");
+  // BUG FIX: photos re-downloaded every room — cache vendored images immutably.
+  const cache = rel.startsWith("/img/") ? "public, max-age=31536000, immutable" : "public, max-age=600";
   fs.readFile(file, (err, buf) => {
     if (err) {
       // SPA fallback for unknown non-api routes
@@ -72,7 +93,7 @@ function serveStatic(reqPath, res) {
       } else send(res, 404, "not found");
       return;
     }
-    send(res, 200, buf, MIME[path.extname(file).toLowerCase()] || "application/octet-stream");
+    send(res, 200, buf, MIME[path.extname(file).toLowerCase()] || "application/octet-stream", cache);
   });
 }
 
@@ -107,21 +128,30 @@ const server = http.createServer(async (req, res) => {
       const scores = db.scores || [];
       const top = [...scores].sort((a, b) => b.xp - a.xp).slice(0, 20);
       const TEAMS = ["Lagos", "Abuja", "PH", "Diaspora"];
-      const cities = TEAMS.map((team) => {
-        const mine = scores.filter((s) => s.team === team);
+      const wk = weekKey();
+      const tally = (list) => TEAMS.map((team) => {
+        const mine = list.filter((s) => s.team === team);
         return {
           team,
           xp: mine.reduce((n, s) => n + (s.xp || 0), 0),
-          players: mine.length,
+          // BUG FIX: was counting games as "players" — dedupe by name.
+          players: new Set(mine.map((s) => s.name)).size,
           wins: mine.reduce((n, s) => n + (s.wins ? 1 : 0), 0),
         };
       }).sort((a, b) => b.xp - a.xp);
-      return send(res, 200, JSON.stringify({ top, cities, count: scores.length }), MIME[".json"]);
+      return send(res, 200, JSON.stringify({
+        top, count: scores.length,
+        week: wk,
+        cities: tally(scores.filter((s) => s.week === wk)), // resets every Monday
+        citiesAllTime: tally(scores),
+      }, null, 0), MIME[".json"], "no-store");
     }
 
     if (p === "/api/score" && req.method === "POST") {
       const body = await readBody(req);
-      const s = JSON.parse(body || "{}");
+      let s;
+      // BUG FIX: malformed JSON crashed to 500 — now a clean 400.
+      try { s = JSON.parse(body || "{}"); } catch { return send(res, 400, JSON.stringify({ error: "bad json" }), MIME[".json"]); }
       if (!s.name || typeof s.xp !== "number") return send(res, 400, JSON.stringify({ error: "name + xp required" }), MIME[".json"]);
       const db = readDb();
       db.scores = db.scores || [];
@@ -130,6 +160,7 @@ const server = http.createServer(async (req, res) => {
         team: String(s.team || "Lagos").slice(0, 16),
         xp: Math.max(0, Math.min(999999, Math.round(s.xp))),
         wins: s.wins ? 1 : 0,
+        week: weekKey(),
         ts: Date.now(),
       });
       writeDb(db);

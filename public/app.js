@@ -1,5 +1,7 @@
-// Know Naija MVP — always-on room feel via local bots.
-// Identity: auto guest handle now; Lagos Life username plugs in via lib/lagoslife.js later.
+// Know Naija — always-on elimination rooms.
+// Retention loop (HQ + Duolingo lessons): ramp difficulty, savage finale,
+// one-chance spare, survival XP for losers, predict-while-spectating,
+// daily streak + freeze, daily quest, PB + confetti.
 const $ = (id) => document.getElementById(id);
 const SCREENS = ["screen-home", "screen-game", "screen-over"];
 function show(id) { SCREENS.forEach((s) => $(s).classList.add("hidden")); $(id).classList.remove("hidden"); }
@@ -8,12 +10,15 @@ const HOST_LINES = {
   start: ["No dulling! First pic don land.", "20 enter, few go survive. Na you?", "Diaspora vs home-based — make una show sef."],
   right: ["Na so! Sharp eyes 👀", "Correct! You be real Omo Naija.", "Too fast. NEPA no fit catch you."],
   wrong: ["E remain 1 life o! Focus.", "Wrong! That one na setup.", "Omo — you fall my hand small."],
-  elim: ["You don comot, but your city still needs you. Rematch!", "Out! No worry, rematch dey."],
+  spare: ["HOST SPARES YOU! One Chance used — no more shakara."],
+  elim: ["You don comot — predict the winner for +50xp!", "Out! Call the winner, still chop XP."],
   win: ["LASGIDI LEGEND! Take your crown 👑", "You sabi Nigeria pass INEC!"],
+  savage: ["🔥 SAVAGE ROUND — last pic, DOUBLE points. No fear!"],
 };
 
 const GUEST_POOL = ["DanfoStar", "AmalaAce", "NEPAProof", "OwambePro", "SuyaSavant", "JapaDream", "MolueMind", "AsoRocky", "LekkiGhost", "ZumaZoom"];
 const BOT_NAMES = ["Tunde_Lekki", "AdaAbuja", "Emeka_PH", "Zainab_Kano", "Seun_Yaba", "Ngozi_London", "Femi_Toronto", "Kemi_Ibadan", "Ibrahim_Kaduna", "Blessing_Uyo", "Yusuf_Sokoto", "Tobi_NYC", "Funke_Oshodi", "Chidi_Enugu", "Aisha_Dubai", "Dapo_Ikeja", "Grace_Benin", "Musa_Jos", "Sade_Houston"];
+const ROOM_NAMES = ["lasgidi-1", "yaba-2", "owambe-3", "danfo-4", "surulere-5", "obalende-6"];
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
 const shuffle = (a) => [...a].sort(() => Math.random() - 0.5);
 
@@ -21,17 +26,16 @@ let QUESTIONS = [];
 let state = null;
 let session = 0; // bumped on join/quit — stale timers check this before acting
 
-// ---- nav: quitting must kill timers so the room can't "continue" behind you ----
 function goHome() {
   session += 1;
   clearInterval(timerInt);
   state = null;
   $("pill-players").textContent = "20 in room";
   show("screen-home");
+  refreshMeta();
   loadBoards();
 }
 
-// ---- identity: guest handle, Lagos Life swaps this later ----
 function myHandle() {
   let h = localStorage.getItem("kn_name");
   if (!h) {
@@ -41,6 +45,52 @@ function myHandle() {
   return h;
 }
 
+// ---- daily streak + freeze (Duolingo rules, simplified) ----
+function localDay(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+function dayDiff(a, b) { // days from a -> b (local midnights)
+  const pa = a.split("-").map(Number), pb = b.split("-").map(Number);
+  return Math.round((new Date(pb[0], pb[1] - 1, pb[2]) - new Date(pa[0], pa[1] - 1, pa[2])) / 864e5);
+}
+function streakInfo() {
+  return { streak: Number(localStorage.getItem("kn_daystreak") || 0), freeze: Number(localStorage.getItem("kn_freeze") || 0), last: localStorage.getItem("kn_lastday") || "" };
+}
+// Called at end of every room. Returns {streak, froze, bonus}.
+function extendStreak() {
+  const today = localDay();
+  let { streak, freeze, last } = streakInfo();
+  let froze = false;
+  if (last === today) return { streak, froze, bonus: 0 };
+  const gap = last ? dayDiff(last, today) : 99;
+  if (gap === 1) streak += 1;
+  else if (gap === 2 && freeze > 0) { freeze -= 1; streak += 1; froze = true; } // freeze burns instead of the streak
+  else streak = 1;
+  if (streak % 7 === 0) freeze = Math.min(2, freeze + 1); // earn a freeze weekly
+  localStorage.setItem("kn_daystreak", streak);
+  localStorage.setItem("kn_freeze", freeze);
+  localStorage.setItem("kn_lastday", today);
+  return { streak, froze, bonus: Math.min(50, streak * 5) };
+}
+// ---- daily quest: survive 3 rounds ----
+function questProg() { return JSON.parse(localStorage.getItem("kn_quest") || '{"date":"","best":0,"done":false}'); }
+function questBump(survived) {
+  const today = localDay();
+  const q = questProg();
+  if (q.date !== today) { q.date = today; q.best = 0; q.done = false; }
+  q.best = Math.max(q.best, survived);
+  let bonus = 0;
+  if (!q.done && q.best >= 3) { q.done = true; bonus = 30; }
+  localStorage.setItem("kn_quest", JSON.stringify(q));
+  return { bonus, done: q.done, best: q.best };
+}
+function refreshMeta() {
+  const { streak, freeze } = streakInfo();
+  $("me-streak").textContent = streak > 0 ? `${streak}-day streak` : "0-day streak — play a room to start one";
+  $("me-freeze").textContent = freeze > 0 ? `❄️ ${freeze} freeze${freeze > 1 ? "s" : ""} banked` : "";
+  const q = questProg();
+  const fresh = q.date === localDay();
+  $("me-quest").textContent = fresh && q.done ? `done today ✅ (best ${q.best}/7)` : `survive 3 rounds (+30xp)${fresh ? ` — best today ${q.best}/7` : ""}`;
+}
+
 async function loadQuestions() {
   try {
     const r = await fetch("/api/questions");
@@ -48,10 +98,16 @@ async function loadQuestions() {
   } catch { /* offline */ }
   QUESTIONS = [];
 }
+// HQ lesson: ramp easy -> hard so round 1 hooks and the finale is savage.
 function roomPool() {
-  const verified = QUESTIONS.filter((q) => q.verified !== false);
-  const pool = verified.length >= 7 ? verified : QUESTIONS;
-  return shuffle(pool).slice(0, 7);
+  const v = QUESTIONS.filter((q) => q.verified !== false);
+  const pool = v.length >= 7 ? v : QUESTIONS;
+  const by = { easy: [], medium: [], hard: [] };
+  shuffle(pool).forEach((q) => (by[q.difficulty] || by.medium).push(q));
+  const plan = ["easy", "easy", "medium", "medium", "medium", "hard", "hard"];
+  const out = [];
+  for (const d of plan) out.push(by[d].pop() || by.easy.pop() || by.medium.pop() || by.hard.pop());
+  return out.filter(Boolean).slice(0, 7);
 }
 
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
@@ -80,6 +136,7 @@ async function loadBoards() {
       ? j.top.slice(0, 8).map((s, i) => `<li>${i + 1}. <b>${escapeHtml(s.name)}</b> [${escapeHtml(s.team)}] — ${s.xp}xp</li>`).join("")
       : "<li>No legends yet. Be the first.</li>";
     renderCities($("home-cities"), j.cities);
+    $("home-week").textContent = j.week ? `· this week (${j.week}, resets Mon)` : "";
     return j;
   } catch {
     const local = JSON.parse(localStorage.getItem("kn_local_board") || "[]");
@@ -94,7 +151,7 @@ async function loadBoards() {
 function newRoom(player) {
   const bots = shuffle(BOT_NAMES).slice(0, 19).map((n) => ({ name: n, skill: 0.45 + Math.random() * 0.45, alive: true, score: 0 }));
   return {
-    player: { ...player, lives: 2, streak: 0, score: 0, alive: true },
+    player: { ...player, lives: 2, spare: true, streak: 0, maxStreak: 0, score: 0, alive: true, correct: 0, answered: 0, predict: null },
     bots,
     rounds: roomPool(),
     idx: 0,
@@ -118,6 +175,7 @@ function playRound() {
   state.lock = false;
   const q = state.rounds[state.idx];
   const roundNo = state.idx + 1;
+  const isSavage = state.idx === state.rounds.length - 1;
   $("g-round").textContent = roundNo;
   $("g-lives").textContent = state.player.lives;
   $("g-streak").textContent = state.player.streak;
@@ -131,8 +189,10 @@ function playRound() {
     $("g-pic").innerHTML = `<div>${q.emoji}<small>pic ${roundNo} • ${escapeHtml(q.state)} • photo dropping soon</small></div>`;
     $("g-credit").innerHTML = "";
   }
-  $("g-clue").textContent = "💡 " + q.clue;
-  $("g-feed").textContent = "";
+  $("g-clue").textContent = (isSavage ? "🔥 SAVAGE — 2x points! " : "") + "💡 " + q.clue;
+  $("g-feed").textContent = isSavage ? pick(HOST_LINES.savage) : "";
+  $("g-predict").classList.add("hidden");
+  $("g-predict").innerHTML = "";
   const opts = $("g-opts");
   opts.innerHTML = "";
   shuffle(q.options).forEach((op) => {
@@ -157,6 +217,23 @@ function playRound() {
   state.t0 = t0;
 }
 
+// Eliminated players pick a winner — keeps them watching instead of quitting.
+function offerPredict() {
+  const box = $("g-predict");
+  const cands = [...state.bots].filter((b) => b.alive).sort((a, b) => b.score - a.score).slice(0, 3);
+  if (!cands.length) return;
+  box.innerHTML = `<span>Who wins? (+50xp if you call it)</span>` +
+    cands.map((b) => `<button data-n="${escapeHtml(b.name)}">${escapeHtml(b.name)}</button>`).join("");
+  box.classList.remove("hidden");
+  box.querySelectorAll("button").forEach((btn) => {
+    btn.onclick = () => {
+      state.player.predict = btn.dataset.n;
+      box.classList.add("hidden");
+      $("g-feed").textContent = `Locked: ${state.player.predict} to win. No pressure. 👀`;
+    };
+  });
+}
+
 function answer(op, btn) {
   if (state.lock) return;
   state.lock = true;
@@ -164,6 +241,7 @@ function answer(op, btn) {
   const q = state.rounds[state.idx];
   const correct = op === q.answer;
   const secsLeft = Math.max(0, 10 - (performance.now() - state.t0) / 1000);
+  const savageMult = state.idx === state.rounds.length - 1 ? 2 : 1;
   const btns = [...$("g-opts").children];
   btns.forEach((b) => {
     b.disabled = true;
@@ -172,27 +250,39 @@ function answer(op, btn) {
   });
 
   if (correct && state.player.alive) {
-    const gained = Math.round(100 + secsLeft * 10 + state.player.streak * 25);
+    const gained = Math.round((100 + secsLeft * 10 + state.player.streak * 25) * savageMult);
     state.player.score += gained;
     state.player.streak += 1;
+    state.player.maxStreak = Math.max(state.player.maxStreak, state.player.streak);
+    state.player.correct += 1;
+    state.player.answered += 1;
     $("g-feed").textContent = `+${gained} — ${pick(HOST_LINES.right)}`;
     $("g-host").textContent = pick(HOST_LINES.right);
   } else if (state.player.alive) {
+    state.player.answered += 1;
     state.player.lives -= 1;
     state.player.streak = 0;
-    if (state.player.lives <= 0) {
+    if (state.player.lives <= 0 && state.player.spare) {
+      // One Chance: HQ's extra-life mechanic — spares you once per room.
+      state.player.spare = false;
+      state.player.lives = 1;
+      $("g-feed").textContent = `Correct: ${q.answer}. ${pick(HOST_LINES.spare)}`;
+      $("g-host").textContent = pick(HOST_LINES.spare);
+    } else if (state.player.lives <= 0) {
       state.player.alive = false;
       $("g-feed").textContent = `Eliminated! Correct: ${q.answer}. ${pick(HOST_LINES.elim)}`;
+      $("g-host").textContent = $("g-feed").textContent;
+      offerPredict();
     } else {
       $("g-feed").textContent = `Wrong! Correct: ${q.answer}. ${pick(HOST_LINES.wrong)}`;
+      $("g-host").textContent = $("g-feed").textContent;
     }
-    $("g-host").textContent = $("g-feed").textContent;
   }
 
   state.bots.forEach((b) => {
     if (!b.alive) return;
     const hits = Math.random() < b.skill * (q.difficulty === "hard" ? 0.7 : 1);
-    if (hits) b.score += Math.round(100 + Math.random() * 120 + (state.idx * 8));
+    if (hits) b.score += Math.round((100 + Math.random() * 120 + (state.idx * 8)) * (state.idx === state.rounds.length - 1 ? 2 : 1));
     else if (Math.random() < 0.45) b.alive = false;
   });
   if (state.idx < 4) {
@@ -212,7 +302,21 @@ function answer(op, btn) {
     state.idx += 1;
     if (state.idx >= state.rounds.length || (!state.player.alive && aliveCount() <= 1)) endGame();
     else playRound();
-  }, 1600);
+  }, state.player.alive ? 1600 : 2600); // spectating? slower pace, time to predict
+}
+
+function confetti(n = 26) {
+  const em = ["🎉", "🇳🇬", "⭐", "👑", "🎊"];
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement("span");
+    s.className = "confetti";
+    s.textContent = pick(em);
+    s.style.left = Math.random() * 100 + "%";
+    s.style.animationDelay = (Math.random() * 0.8) + "s";
+    s.style.fontSize = (16 + Math.random() * 22) + "px";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 3200);
+  }
 }
 
 async function endGame() {
@@ -220,19 +324,41 @@ async function endGame() {
   const rank = [{ n: state.player.name + " (you)", s: state.player.score }, ...state.bots.map((b) => ({ n: b.name, s: b.score }))].sort((a, b) => b.s - a.s);
   const pos = rank.findIndex((r) => r.n.endsWith("(you)")) + 1;
   const won = pos === 1;
-  const xp = Math.round(state.player.score / 10 + (won ? 150 : 0) + state.player.streak * 5);
+  const survived = state.player.alive ? state.rounds.length : Math.max(0, state.idx);
+  // HQ lesson: losers must progress too — survival XP + accuracy + bonuses.
+  const oracle = state.player.predict && rank[0].n === state.player.predict ? 50 : 0;
+  const { streak, froze, bonus: streakBonus } = extendStreak();
+  const { bonus: questBonus } = questBump(survived);
+  const xp = Math.round(state.player.score / 10 + (won ? 150 : 0) + state.player.maxStreak * 5 + survived * 10 + oracle + streakBonus + questBonus);
+  const acc = state.player.answered ? Math.round((state.player.correct / state.player.answered) * 100) : 0;
+
   $("o-title").textContent = won ? "You win the room! 👑" : state.player.alive ? `Survived! #${pos} of 20` : `Eliminated — #${pos} of 20`;
-  $("o-sub").textContent = won ? pick(HOST_LINES.win) + ` +${xp}xp for Team ${state.player.team}.` : `+${xp}xp for Team ${state.player.team}. Hit rematch — one more run.`;
+  let sub = won ? pick(HOST_LINES.win) + ` +${xp}xp for Team ${state.player.team}.` : `+${xp}xp for Team ${state.player.team}. Hit rematch — one more run.`;
+  if (oracle) sub += " Called the winner! 🔮 +50xp.";
+  if (froze) sub += " Freeze saved your streak ❄️.";
+  if (questBonus) sub += " Daily quest done 🎯 +30xp.";
+  $("o-sub").textContent = sub;
+  $("o-stats").textContent = `🎯 ${acc}% accuracy • 🔥 best combo x${state.player.maxStreak} • 🛡️ ${survived}/${state.rounds.length} survived • 🔥 ${streak}-day streak`;
   $("o-score").textContent = state.player.score;
   $("o-xp").textContent = xp;
+
+  const prevBest = Number(localStorage.getItem("kn_best") || 0);
+  const isPB = state.player.score > prevBest && state.player.score > 0;
+  if (isPB) {
+    localStorage.setItem("kn_best", state.player.score);
+    $("o-stats").textContent += " • NEW PB! 🎉";
+  }
+  if (won || isPB) confetti();
+
   const totalXp = Number(localStorage.getItem("kn_xp") || 0) + xp;
   localStorage.setItem("kn_xp", totalXp);
   $("o-league").textContent = leagueFor(totalXp);
   $("o-board").innerHTML = rank.slice(0, 8).map((r, i) => `<li>${i + 1}. <b>${escapeHtml(r.n)}</b> — ${r.s}</li>`).join("");
 
   const entry = { name: state.player.name, team: state.player.team, xp, wins: won };
+  // BUG FIX: local board stored lifetime totals next to server per-game scores — now per-game both sides.
   const local = JSON.parse(localStorage.getItem("kn_local_board") || "[]");
-  local.push({ ...entry, xp: totalXp });
+  local.push(entry);
   localStorage.setItem("kn_local_board", JSON.stringify(local.slice(-50)));
   let boards = null;
   try {
@@ -246,6 +372,7 @@ async function endGame() {
   } else {
     $("o-cities").innerHTML = "<p class='tiny'>City battle needs connection.</p>";
   }
+  refreshMeta();
 }
 
 $("btn-join").onclick = async () => {
@@ -255,10 +382,11 @@ $("btn-join").onclick = async () => {
   if (!QUESTIONS.length) { alert("Questions failed to load. Is the server running?"); return; }
   session += 1;
   state = newRoom({ name: myHandle(), team });
+  $("pill-room").textContent = "room: " + pick(ROOM_NAMES);
   show("screen-game");
   playRound();
 };
-$("btn-again").onclick = () => { session += 1; state = newRoom({ name: myHandle(), team: localStorage.getItem("kn_team") || "Lagos" }); show("screen-game"); playRound(); };
+$("btn-again").onclick = () => { session += 1; state = newRoom({ name: myHandle(), team: localStorage.getItem("kn_team") || "Lagos" }); $("pill-room").textContent = "room: " + pick(ROOM_NAMES); show("screen-game"); playRound(); };
 $("btn-home").onclick = goHome;
 $("btn-quit").onclick = goHome;
 $("nav-home").onclick = goHome;
@@ -269,5 +397,6 @@ $("btn-board").onclick = () => loadBoards();
   $("me-handle").textContent = myHandle();
   $("in-team").value = localStorage.getItem("kn_team") || "Lagos";
   await loadQuestions();
+  refreshMeta();
   loadBoards();
 })();

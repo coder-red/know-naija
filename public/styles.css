@@ -36,4 +36,11 @@ h1 { margin:.2em 0; } .sub { color:var(--mut); }
 .cities { display:grid; gap:8px; } .cityrow { display:grid; grid-template-columns:110px 1fr auto; gap:8px; align-items:center; font-size:13px; }
 .cityname { font-weight:700; white-space:nowrap; } .cityxp { color:var(--mut); white-space:nowrap; }
 .citybar { height:10px; background:#0007; border-radius:99px; overflow:hidden; } .citybar div { height:100%; background:linear-gradient(90deg,var(--acc),var(--acc2)); }
+.streakline, .questline { font-size:14px; }
+.predict { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; padding:10px; border:1px dashed var(--acc2); border-radius:10px; font-size:14px; }
+.predict button { background:#0d1430; color:var(--ink); border:1px solid var(--acc2); border-radius:8px; padding:6px 10px; cursor:pointer; }
+.predict button:hover { background:var(--acc2); color:#000; }
+.statsline { color:var(--mut); font-size:14px; }
+.confetti { position:fixed; top:-40px; z-index:50; pointer-events:none; animation:fall 2.6s ease-in forwards; }
+@keyframes fall { to { transform:translateY(110vh) rotate(360deg); } }
 .foot { text-align:center; color:var(--mut); font-size:12px; padding:20px; }
